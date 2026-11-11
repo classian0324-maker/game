@@ -1,0 +1,1960 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>대전쟁 : WAR CHRONICLE</title>
+<style>
+:root{
+  --bg:#0a0e13;--p1:#11171e;--p2:#171f28;--p3:#1f2a35;--line:#2b3947;
+  --tx:#e6edf5;--dim:#8fa1b3;--gold:#e8b04b;--red:#e5484d;--grn:#46c26a;--blu:#5aa9e6;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg);color:var(--tx);font-family:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',system-ui,sans-serif;font-size:14px}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+select{font-family:inherit;color:var(--tx);background:var(--p3);border:1px solid var(--line);border-radius:6px;padding:5px 7px}
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-track{background:#0d1319}
+::-webkit-scrollbar-thumb{background:#2e3d4d;border-radius:6px}
+::-webkit-scrollbar-thumb:hover{background:#40566c}
+.screen{position:absolute;inset:0;display:none}
+.screen.active{display:block}
+h1,h2,h3,.hd{letter-spacing:.5px}
+
+/* ---------- TITLE ---------- */
+#scr-title{background:
+  radial-gradient(1000px 600px at 50% -10%,#1c2a38 0%,transparent 60%),
+  radial-gradient(700px 500px at 90% 110%,#2a1c14 0%,transparent 60%),var(--bg);
+  overflow:auto}
+.title-wrap{max-width:1100px;margin:0 auto;padding:54px 24px 40px;text-align:center}
+.emblem{font-size:56px;filter:drop-shadow(0 6px 16px rgba(232,176,75,.35))}
+.title-wrap h1{font-size:56px;margin-top:6px;font-weight:900;
+  background:linear-gradient(180deg,#fff,#e8b04b);-webkit-background-clip:text;background-clip:text;color:transparent}
+.title-wrap h1 span{display:block;font-size:16px;letter-spacing:12px;color:var(--dim);font-weight:600;margin-top:6px}
+.sub{color:var(--dim);margin-top:14px;font-size:15px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:34px}
+.card{background:linear-gradient(160deg,var(--p2),var(--p1));border:1px solid var(--line);border-radius:14px;
+  padding:20px;text-align:left;cursor:pointer;transition:.18s;position:relative;overflow:hidden}
+.card:hover{transform:translateY(-4px);border-color:var(--gold);box-shadow:0 12px 30px rgba(0,0,0,.45)}
+.card.sel{border-color:var(--gold);box-shadow:0 0 0 2px rgba(232,176,75,.3) inset}
+.card .big{font-size:40px}
+.card h3{font-size:22px;margin-top:8px}
+.card .tag{font-size:12px;color:var(--gold);letter-spacing:2px;font-weight:700}
+.card p{color:var(--dim);font-size:13px;line-height:1.6;margin-top:8px}
+.title-actions{margin-top:26px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn{background:var(--p3);border:1px solid var(--line);border-radius:8px;padding:10px 18px;font-weight:700;transition:.15s}
+.btn:hover{background:#2a3846;border-color:#42576c}
+.btn.ghost{background:transparent}
+.btn.main{background:linear-gradient(180deg,#e8b04b,#c98c25);color:#231703;border:none;padding:12px 26px;font-size:16px}
+.btn.main:hover{filter:brightness(1.1)}
+.btn.danger{background:#7a2226;border-color:#a33}
+.btn.danger:hover{background:#9c2b30}
+.btn:disabled{opacity:.35;cursor:not-allowed;filter:grayscale(.6)}
+.foot{margin-top:34px;color:#5d6c7d;font-size:12px}
+
+/* ---------- NATION SELECT ---------- */
+#scr-nation{background:radial-gradient(900px 500px at 20% -10%,#1b2634 0%,transparent 60%),var(--bg);overflow:auto}
+.nation-wrap{max-width:1120px;margin:0 auto;padding:44px 24px 40px}
+.nation-wrap h2{font-size:34px}
+.nation-wrap .scen-sub{color:var(--gold);letter-spacing:3px;font-size:13px;font-weight:700;margin-bottom:6px}
+.nation-wrap .desc{color:var(--dim);margin-top:8px;line-height:1.6}
+.nat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:24px}
+.nat{background:var(--p2);border:1px solid var(--line);border-radius:12px;padding:16px;cursor:pointer;transition:.16s;position:relative}
+.nat:hover{transform:translateY(-3px);border-color:#4b6076}
+.nat.sel{border-color:var(--gold);box-shadow:0 0 0 2px rgba(232,176,75,.3)}
+.nat .flag{font-size:34px}
+.nat .nm{font-size:19px;font-weight:800;margin-top:6px}
+.nat .bloc{font-size:12px;color:var(--dim);margin-top:4px}
+.nat .swatch{position:absolute;top:14px;right:14px;width:16px;height:16px;border-radius:4px;border:1px solid rgba(255,255,255,.35)}
+.rules-box{margin-top:22px;background:var(--p1);border:1px dashed var(--line);border-radius:12px;padding:16px}
+.rules-box h4{color:var(--gold);letter-spacing:2px;font-size:13px}
+.rules-box ul{list-style:none;margin-top:10px;display:grid;gap:7px}
+.rules-box li{font-size:13px;color:#c9d6e4}
+.rules-box li b{color:#fff}
+.diff-row{margin-top:24px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.diff{padding:9px 16px;border:1px solid var(--line);border-radius:8px;background:var(--p2);font-weight:700}
+.diff.sel{border-color:var(--gold);background:#2a2213;color:var(--gold)}
+.actions-bar{margin-top:28px;display:flex;gap:12px;justify-content:space-between}
+
+/* ---------- GAME ---------- */
+#scr-game{display:none;grid-template-rows:56px 1fr 62px;grid-template-columns:308px 1fr 344px;height:100%}
+#scr-game.active{display:grid}
+.topbar{grid-column:1/4;background:linear-gradient(180deg,#151d26,#10161d);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:16px;padding:0 16px;overflow:hidden}
+.nat-badge{display:flex;align-items:center;gap:8px;font-weight:800;font-size:16px;white-space:nowrap}
+.nat-badge i{width:12px;height:22px;border-radius:3px;display:inline-block}
+.turn-info{color:var(--dim);font-size:13px;white-space:nowrap;border-left:1px solid var(--line);padding-left:16px}
+.res-row{display:flex;gap:14px;margin-left:auto;flex-wrap:nowrap;overflow:hidden}
+.res{display:flex;align-items:center;gap:6px;font-size:13px;white-space:nowrap;background:var(--p2);
+  border:1px solid var(--line);border-radius:8px;padding:5px 10px}
+.res b{font-size:14px}
+.res.warn b{color:var(--red)}
+.res .ic{font-size:15px}
+
+.side{background:var(--p1);border-right:1px solid var(--line);overflow-y:auto;overflow-x:hidden}
+.side.right{border-right:none;border-left:1px solid var(--line)}
+.pane{padding:14px}
+.sec-title{font-size:11px;letter-spacing:2px;color:var(--gold);font-weight:800;margin:16px 0 8px;
+  border-bottom:1px solid var(--line);padding-bottom:5px}
+.sec-title:first-child{margin-top:0}
+.kv{display:flex;justify-content:space-between;font-size:13px;padding:3px 0;color:#c3d0dd}
+.kv span:last-child{color:#fff;font-weight:700}
+.empty{color:#66788b;font-size:13px;line-height:1.7;padding:14px 4px}
+.troop-row{display:flex;align-items:center;gap:8px;background:var(--p2);border:1px solid var(--line);
+  border-radius:8px;padding:7px 9px;margin-bottom:6px}
+.troop-row .ic{font-size:18px;width:22px;text-align:center}
+.troop-row .nm{flex:1;font-size:13px}
+.troop-row .ct{font-weight:800;font-size:14px}
+.troop-row .hp{font-size:11px;color:var(--dim)}
+.prod-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.pbtn{background:var(--p2);border:1px solid var(--line);border-radius:8px;padding:7px 8px;text-align:left;transition:.13s}
+.pbtn:hover{border-color:var(--gold);background:#232c1c}
+.pbtn:disabled{opacity:.4}
+.pbtn .t{font-size:13px;font-weight:700}
+.pbtn .c{font-size:11px;color:var(--dim);margin-top:2px}
+.pbtn .c i{font-style:normal;color:var(--gold)}
+.atk-btn{width:100%;margin-top:6px;background:linear-gradient(180deg,#8c2f33,#6a2226);border:1px solid #b0434a;
+  border-radius:8px;padding:9px;font-weight:800;letter-spacing:1px}
+.atk-btn:hover{filter:brightness(1.15)}
+.atk-btn:disabled{opacity:.35;filter:grayscale(1)}
+.move-row{display:flex;gap:6px;margin-top:6px}
+.move-row .btn{flex:1;padding:7px 4px;font-size:12px}
+.target{background:var(--p2);border:1px solid var(--line);border-radius:8px;padding:9px;margin-bottom:7px}
+.target .tt{display:flex;justify-content:space-between;font-size:13px;font-weight:700}
+.target .tm{font-size:11px;color:var(--dim);margin-top:3px}
+
+.map-area{position:relative;background:#071019;overflow:hidden}
+#map{display:block;width:100%;height:100%;cursor:pointer}
+.map-hud{position:absolute;left:12px;top:12px;display:flex;gap:8px;flex-wrap:wrap;pointer-events:none}
+.chip{background:rgba(10,14,19,.82);border:1px solid var(--line);border-radius:7px;padding:5px 9px;font-size:12px;color:#bcd}
+.legend{position:absolute;right:12px;bottom:12px;background:rgba(10,14,19,.85);border:1px solid var(--line);
+  border-radius:9px;padding:9px 11px;font-size:11.5px;color:var(--dim);line-height:1.8;pointer-events:none}
+.hover-tip{position:absolute;left:12px;bottom:12px;background:rgba(10,14,19,.9);border:1px solid var(--line);
+  border-radius:8px;padding:7px 11px;font-size:12.5px;display:none;pointer-events:none}
+
+.tabs{display:flex;border-bottom:1px solid var(--line);background:var(--p2);position:sticky;top:0;z-index:5}
+.tab{flex:1;padding:11px 4px;font-size:12.5px;font-weight:800;color:var(--dim);border-bottom:2px solid transparent}
+.tab.on{color:var(--gold);border-bottom-color:var(--gold);background:var(--p1)}
+.tcard{background:var(--p2);border:1px solid var(--line);border-radius:9px;padding:10px;margin-bottom:8px}
+.tcard .th{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.tcard .th b{font-size:14px}
+.tcard .td{font-size:12px;color:var(--dim);line-height:1.55;margin-top:5px}
+.tcard .eff{font-size:12.5px;color:#9fe0b4;margin-top:5px}
+.tcard.locked{opacity:.55}
+.mini{font-size:11.5px;padding:5px 9px;border-radius:6px;background:#28333f;border:1px solid var(--line);font-weight:700}
+.mini:hover{border-color:var(--gold);color:var(--gold)}
+.mini.on{background:#2b2413;border-color:var(--gold);color:var(--gold)}
+.bar{height:6px;background:#0e141b;border-radius:4px;overflow:hidden;margin-top:7px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,#e8b04b,#ffd98a)}
+.logline{font-size:12.5px;padding:6px 8px;border-radius:6px;background:var(--p2);margin-bottom:5px;line-height:1.5;color:#c6d3e0}
+.logline b{color:var(--gold)}
+.logline.bad b{color:var(--red)}
+.logline.good b{color:var(--grn)}
+.rank{display:flex;align-items:center;gap:9px;padding:7px 6px;border-bottom:1px solid #1d2733;font-size:13px}
+.rank .n{width:18px;color:var(--dim);font-weight:800}
+.rank .c{width:12px;height:12px;border-radius:3px}
+.rank .nm{flex:1}
+.rank .st{color:var(--dim);font-size:12px}
+.rank.me{background:rgba(232,176,75,.09);border-radius:6px}
+.rank.dead{opacity:.4;text-decoration:line-through}
+
+.botbar{grid-column:1/4;background:linear-gradient(0deg,#151d26,#10161d);border-top:1px solid var(--line);
+  display:flex;align-items:center;gap:12px;padding:0 16px}
+.bot-msg{color:var(--dim);font-size:12.5px;flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.bot-right{display:flex;gap:8px;align-items:center}
+.lbl{font-size:12px;color:var(--dim)}
+
+/* ---------- MODAL ---------- */
+.modal{position:fixed;inset:0;background:rgba(3,6,9,.82);display:none;align-items:center;justify-content:center;z-index:60;backdrop-filter:blur(3px)}
+.modal.on{display:flex}
+.sheet{width:min(760px,94vw);max-height:88vh;overflow-y:auto;background:linear-gradient(180deg,#18212b,#10161d);
+  border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:0 30px 70px rgba(0,0,0,.6)}
+.sheet h2{font-size:24px;display:flex;align-items:center;gap:10px}
+.sheet h2 .vs{color:var(--red);font-size:16px;letter-spacing:3px}
+.sheet .close-x{margin-left:auto;font-size:13px;color:var(--dim)}
+.btl-head{display:flex;justify-content:space-between;gap:14px;margin-top:16px}
+.btl-side{flex:1;background:var(--p2);border:1px solid var(--line);border-radius:12px;padding:12px}
+.btl-side .nm{font-weight:800;font-size:16px;display:flex;align-items:center;gap:7px}
+.btl-side .am{font-size:12.5px;color:var(--dim);margin-top:7px;line-height:1.6}
+.btl-arena{height:9px;border-radius:5px;background:#0d131a;margin-top:16px;overflow:hidden;display:flex}
+.btl-arena i{display:block;height:100%;transition:width .35s}
+.btl-arena .a{background:linear-gradient(90deg,#e8b04b,#ffcf7d)}
+.btl-arena .d{background:linear-gradient(90deg,#e5484d,#ff8b8f)}
+.btl-log{margin-top:14px;max-height:34vh;overflow-y:auto;background:#0c1219;border:1px solid var(--line);
+  border-radius:10px;padding:10px;font-size:13px;line-height:1.75}
+.btl-log div{padding:2px 0;color:#cbd7e4}
+.btl-log div .r{color:var(--gold);font-weight:800;display:inline-block;width:52px}
+.btl-foot{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+.result{font-size:20px;font-weight:900;text-align:center;padding:8px;letter-spacing:4px}
+.result.win{color:var(--gold)}
+.result.lose{color:var(--red)}
+.help-list{line-height:1.9;font-size:13.5px;color:#c9d6e4}
+.help-list b{color:var(--gold)}
+.help-list li{margin-left:18px;margin-bottom:5px}
+
+/* ---------- TOAST / GAMEOVER ---------- */
+#toasts{position:fixed;top:66px;left:50%;transform:translateX(-50%);z-index:80;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+.toast{background:linear-gradient(180deg,#1d2732,#131a22);border:1px solid var(--gold);border-radius:10px;
+  padding:11px 18px;font-size:14px;box-shadow:0 14px 34px rgba(0,0,0,.55);animation:pop .3s ease}
+.toast.bad{border-color:var(--red)}
+@keyframes pop{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+.over-title{font-size:44px;font-weight:900;text-align:center;letter-spacing:8px}
+.over-title.win{background:linear-gradient(180deg,#fff,#e8b04b);-webkit-background-clip:text;background-clip:text;color:transparent}
+.over-title.lose{color:var(--red)}
+.over-sub{text-align:center;color:var(--dim);margin-top:10px;line-height:1.8}
+@media(max-width:1400px){
+  #scr-game{grid-template-columns:252px 1fr 288px}
+  .res-row{gap:8px}
+  .res{padding:4px 7px;font-size:12px}
+}
+@media(max-width:1150px){
+  #scr-game{grid-template-columns:226px 1fr 258px}
+  .nat-badge{font-size:14px}
+  .turn-info{font-size:12px;padding-left:10px}
+}
+</style>
+</head>
+<body>
+
+<section id="scr-title" class="screen active">
+  <div class="title-wrap">
+    <div class="emblem">⚔️</div>
+    <h1>대전쟁<span>WAR CHRONICLE</span></h1>
+    <p class="sub">제국을 세우고, 대륙을 삼켜라 — 대규모 전략 전쟁 시뮬레이션</p>
+    <div id="scenario-cards" class="cards"></div>
+    <div class="title-actions">
+      <button id="btn-continue" class="btn ghost">▶ 이어하기</button>
+      <button id="btn-help" class="btn ghost">📖 게임 규칙</button>
+      <button id="btn-reset" class="btn ghost">🗑 저장 초기화</button>
+    </div>
+    <p class="foot">저장은 자동으로 진행됩니다 · 조작: 지도 클릭 → 영지 선택 → 생산 / 공격 / 이동</p>
+  </div>
+</section>
+
+<section id="scr-nation" class="screen">
+  <div class="nation-wrap">
+    <div class="scen-sub" id="ns-tag">SCENARIO</div>
+    <h2 id="ns-title">전쟁 선택</h2>
+    <p class="desc" id="ns-desc"></p>
+    <div id="nat-grid" class="nat-grid"></div>
+    <div id="any-rules" class="rules-box" style="display:none">
+      <h4>🎲 이번 판의 무작위 규칙</h4>
+      <ul id="any-rules-list"></ul>
+    </div>
+    <div class="diff-row">
+      <span class="lbl">난이도</span>
+      <button class="diff" data-d="0">쉬움</button>
+      <button class="diff sel" data-d="1">보통</button>
+      <button class="diff" data-d="2">어려움</button>
+      <button class="diff" data-d="3">전쟁광</button>
+    </div>
+    <div class="actions-bar">
+      <button id="btn-back" class="btn ghost">← 메인으로</button>
+      <button id="btn-start" class="btn main">전쟁 개시 ⚔</button>
+    </div>
+  </div>
+</section>
+
+<section id="scr-game" class="screen">
+  <div class="topbar">
+    <div class="nat-badge"><i id="my-color"></i><span id="my-flag">🏳️</span><span id="my-name">국가</span></div>
+    <div class="turn-info" id="turn-info">1턴 · 1914년 1월</div>
+    <div class="res-row" id="res-row"></div>
+  </div>
+
+  <div class="side left"><div class="pane" id="left-pane"></div></div>
+
+  <div class="map-area">
+    <canvas id="map"></canvas>
+    <div class="map-hud" id="map-hud"></div>
+    <div class="hover-tip" id="hover-tip"></div>
+    <div class="legend">
+      🟩 아군 진영 &nbsp; 🟥 적 진영 &nbsp; ⬜ 중립<br>
+      ⭐ 수도 · 🏙️ 도시 · ⛰️ 산악 · 🌊 해안(항구)<br>
+      클릭: 영지 선택 · 적 영지 클릭 시 공격 가능
+    </div>
+  </div>
+
+  <div class="side right">
+    <div class="tabs" id="tabs">
+      <button class="tab on" data-t="army">병력</button>
+      <button class="tab" data-t="weapon">무기</button>
+      <button class="tab" data-t="tech">연구</button>
+      <button class="tab" data-t="info">정보</button>
+      <button class="tab" data-t="log">기록</button>
+    </div>
+    <div class="pane" id="right-pane"></div>
+  </div>
+
+  <div class="botbar">
+    <div class="bot-msg" id="bot-msg">영지를 선택하세요.</div>
+    <div class="bot-right">
+      <span class="lbl">공격 투입</span>
+      <select id="commit-sel">
+        <option value="1">100% 전량</option>
+        <option value="0.7">70% 투입</option>
+        <option value="0.5">50% 투입</option>
+        <option value="0.3">30% 투입</option>
+      </select>
+      <button class="btn" id="btn-save">💾 저장</button>
+      <button class="btn" id="btn-help2">📖 규칙</button>
+      <button class="btn main" id="btn-endturn">턴 종료 ▶</button>
+    </div>
+  </div>
+</section>
+
+<div class="modal" id="modal-battle">
+  <div class="sheet">
+    <h2>⚔ 전투 <span class="vs">VS</span> <span id="btl-title" style="font-size:16px;color:#8fa1b3"></span>
+      <span class="close-x" id="btl-skip">건너뛰기 »</span></h2>
+    <div class="btl-head">
+      <div class="btl-side" id="btl-atk"></div>
+      <div class="btl-side" id="btl-def"></div>
+    </div>
+    <div class="btl-arena"><i class="a" id="btl-bar-a" style="width:50%"></i><i class="d" id="btl-bar-d" style="width:50%"></i></div>
+    <div class="btl-log" id="btl-log"></div>
+    <div class="btl-foot" id="btl-foot" style="display:none">
+      <button class="btn main" id="btl-ok">확인</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="modal-help">
+  <div class="sheet">
+    <h2>📖 게임 규칙 <span class="close-x" id="help-close">닫기 ✕</span></h2>
+    <div class="help-list" id="help-body"></div>
+    <div class="btl-foot"><button class="btn main" id="help-ok">알겠어요</button></div>
+  </div>
+</div>
+
+<div class="modal" id="modal-over">
+  <div class="sheet">
+    <div class="over-title win" id="over-title">승리</div>
+    <p class="over-sub" id="over-sub"></p>
+    <div class="btl-foot" style="justify-content:center;margin-top:22px">
+      <button class="btn" id="over-menu">메인 메뉴</button>
+      <button class="btn main" id="over-restart">다시 시작</button>
+    </div>
+  </div>
+</div>
+
+<div id="toasts"></div>
+
+<script>
+/* ============ UTIL ============ */
+const $=s=>document.querySelector(s);
+const rnd=(a,b)=>Math.random()*(b-a)+a;
+const ri=(a,b)=>Math.floor(rnd(a,b+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const fmt=n=>Math.round(n).toLocaleString('ko-KR');
+const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+/* ============ 지형 ============ */
+const TERRAIN={
+  plain :{name:'평원', icon:'🌾', def:0.00},
+  forest:{name:'삼림', icon:'🌲', def:0.15},
+  hill  :{name:'언덕', icon:'⛰️', def:0.25},
+  mtn   :{name:'산악', icon:'🏔️', def:0.45},
+  swamp :{name:'습지', icon:'🐸', def:0.20},
+  desert:{name:'사막', icon:'🏜️', def:0.05},
+  city  :{name:'도시', icon:'🏙️', def:0.20},
+  coast :{name:'해안', icon:'🌊', def:0.05}
+};
+
+/* ============ 병력 ============ */
+const UNITS={
+  inf :{name:'보병',      icon:'🪖', atk:9,  def:11, hp:10, m:25,  p:400,  pts:3,  sup:2,  tag:['ww1','ww2','any'], desc:'전선의 척추. 저렴한 값에 대량으로 동원된다.'},
+  eng :{name:'공병대',    icon:'🧨', atk:7,  def:15, hp:12, m:70,  p:300,  pts:6,  sup:3,  tag:['ww1','ww2','any'], req:'t_eng', desc:'요새·참호를 무너뜨린다. 요새 효과를 절반으로.'},
+  mg  :{name:'기관총대',  icon:'🔫', atk:15, def:15, hp:9,  m:75,  p:350,  pts:6,  sup:3,  tag:['ww1','ww2','any'], req:'t_mg', desc:'돌격을 막아내는 최강의 방어 병력.'},
+  art :{name:'포병',      icon:'💥', atk:24, def:7,  hp:8,  m:130, p:300,  pts:9,  sup:5,  tag:['ww1','ww2','any'], req:'t_art', desc:'화력의 핵심. 공격 시 막대한 피해를 입힌다.'},
+  cav :{name:'기병대',    icon:'🐎', atk:16, def:9,  hp:9,  m:110, p:400,  pts:7,  sup:4,  tag:['ww1','any'],       req:'t_cav', desc:'빠른 돌파와 추격. 참호 앞에서는 위험하다.'},
+  tnk :{name:'전차',      icon:'🚛', atk:30, def:20, hp:14, m:320, p:250,  pts:16, sup:8,  tag:['ww2','any'],       req:'t_tnk', desc:'기갑 돌파의 주역. 방어력과 돌파력이 모두 뛰어나다.'},
+  ftr :{name:'전투기',    icon:'✈️', atk:22, def:12, hp:7,  m:350, p:120,  pts:14, sup:7,  tag:['ww1','ww2','any'], req:'t_air', desc:'제공권을 장악하면 전체 화력이 상승한다.'},
+  bom :{name:'폭격기',    icon:'🛩️', atk:36, def:6,  hp:8,  m:480, p:140,  pts:18, sup:9,  tag:['ww2','any'],       req:'t_bom', desc:'적 후방과 방어선을 초토화한다.'},
+  sub :{name:'잠수함',    icon:'🛥️', atk:26, def:8,  hp:10, m:520, p:150,  pts:18, sup:9,  tag:['ww1','ww2','any'], req:'t_sub', desc:'해상 보급선을 끊는 은밀한 살기. 해안에서만 작전.'},
+  bsh :{name:'전함',      icon:'🚢',  atk:40, def:26, hp:18, m:900, p:200,  pts:26, sup:14, tag:['ww1','ww2','any'], req:'t_bsh', desc:'해안 방어와 상륙전의 최강 화력 플랫폼.'},
+  spc :{name:'특수부대',  icon:'🕵️', atk:20, def:14, hp:12, m:400, p:200,  pts:16, sup:6,  tag:['ww2','any'],       req:'t_spc', desc:'파괴·잠입·척후 작전. 요새를 무력화한다.'},
+  nuk :{name:'전략폭격대',icon:'☢️', atk:70, def:4,  hp:6,  m:1600,p:100,  pts:30, sup:10, tag:['ww2','any'],       req:'t_nuk', desc:'전술핵을 탑재한 막판 결전 병력.'}
+};
+Object.keys(UNITS).forEach(k=>UNITS[k].id=k);
+
+/* ============ 무기 ============ */
+const WEAPONS=[
+  {id:'smle', name:'리엔필드 SMLE', cls:'inf', a:22, d:10, cost:800,  tech:'t_rifle', desc:'10연발 보병 소총. 보병 화력을 대폭 향상.'},
+  {id:'k98',  name:'Kar98k 소총',   cls:'inf', a:30, d:14, cost:1400, tech:'t_rifle2',desc:'정밀한 볼트액션 소총. 원거리 사격 정확도 최상.'},
+  {id:'stick',name:'반자동 소총',   cls:'inf', a:44, d:20, cost:2600, tech:'t_rifle3',desc:'연사 가능한 개인화기. 현대 전보병의 표준.'},
+  {id:'vick', name:'비커스 기관총', cls:'mg',  a:25, d:25, cost:1100, tech:'t_mg',    desc:'순환 냉각식 장기관총. 방어전에서 신의 병기.'},
+  {id:'mg42', name:'MG42',          cls:'mg',  a:40, d:32, cost:2000, tech:'t_mg2',   desc:'분당 1200발. 「비터의 연주」라 불린 공포의 화력.'},
+  {id:'qf',   name:'QF 18파운드 포',cls:'art', a:24, d:10, cost:1200, tech:'t_art',   desc:'표준 야전포. 포격전의 시작점.'},
+  {id:'gw',   name:'150mm 야전포',  cls:'art', a:38, d:16, cost:2200, tech:'t_art2',  desc:'대구경 포병. 요새와 진지를 산산조각 낸다.'},
+  {id:'mlrs', name:'다연장 로켓',   cls:'art', a:55, d:18, cost:3600, tech:'t_art3',  desc:'지옥의 불꽃. 광역 포격으로 전선을 불태운다.'},
+  {id:'lance',name:'창기병 창',     cls:'cav', a:28, d:14, cost:900,  tech:'t_cav',   desc:'돌격 기병의 상징. 개활지에서 무적이다.'},
+  {id:'pistol',name:'기병 권총단',  cls:'cav', a:40, d:22, cost:1800, tech:'t_cav2',  desc:'기동 사격술. 기병을 준기동부대로 개조한다.'},
+  {id:'flame',name:'화염방사기',    cls:'eng', a:35, d:25, cost:1600, tech:'t_eng',   desc:'참호 속 적을 태워낸다. 요새 공략의 핵심.'},
+  {id:'mine', name:'지뢰·폭약',     cls:'eng', a:26, d:45, cost:1900, tech:'t_eng2',  desc:'방어선을 강화하고 교통로를 끊는다.'},
+  {id:'mark4',name:'Mark IV 전차',  cls:'tnk', a:30, d:28, cost:2400, tech:'t_tnk',   desc:'참호를 넘는 쇳덩어리. 기갑전의 원형.'},
+  {id:'tiger',name:'중전차 티거',   cls:'tnk', a:52, d:45, cost:4200, tech:'t_tnk2',  desc:'압도적인 장갑과 88mm 포. 단 하나로 대대를 상대한다.'},
+  {id:'mbt',  name:'주력전차(MBT)', cls:'tnk', a:70, d:60, cost:6400, tech:'t_tnk3',  desc:'기동·화력·장갑의 절묘한 균형. 현대전의 왕좌.'},
+  {id:'dr1',  name:'포르모 전투기', cls:'ftr', a:26, d:18, cost:1600, tech:'t_air',   desc:'제공권 싸움의 시작. 적 폭격기를 사냥한다.'},
+  {id:'spit', name:'슈퍼마린 스피트',cls:'ftr',a:44, d:34, cost:2800, tech:'t_air2',  desc:'날렵한 곡선 비행. 제공권을 되찾은 전투기.'},
+  {id:'jet',  name:'제트 전투기',   cls:'ftr', a:66, d:52, cost:4800, tech:'t_air3',  desc:'음속의 시대. 반응속도가 전투의 규칙을 바꾼다.'},
+  {id:'b17',  name:'전략폭격기 B-17',cls:'bom',a:46, d:16, cost:3000, tech:'t_bom',   desc:'18톤의 폭탄을 싣고 적 산업지대를 소멸시킨다.'},
+  {id:'v2',   name:'유도로켓 V2',   cls:'bom', a:70, d:20, cost:5200, tech:'t_rocket',desc:'최초의 탄도미사일. 요격이 불가능한 공포.'},
+  {id:'uboat',name:'U보트',         cls:'sub', a:34, d:18, cost:2000, tech:'t_sub',   desc:'잠망경 뒤에서 적 상선단을 도살한다.'},
+  {id:'nuke_sub',name:'핵잠수함',   cls:'sub', a:60, d:40, cost:5200, tech:'t_sub2',  desc:'항구를 떠난 순간 전쟁은 끝난 것과 같다.'},
+  {id:'dread',name:'강력노급 전함', cls:'bsh', a:34, d:34, cost:2800, tech:'t_bsh',   desc:'305mm 포탑이 즐비한 해상 요새.'},
+  {id:'iowa', name:'아이오와급 전함',cls:'bsh', a:56, d:58, cost:5000, tech:'t_bsh2',  desc:'406mm 주포와 30노트의 속도. 바다의 지배자.'},
+  {id:'fg42', name:'공수 돌격소총', cls:'spc', a:42, d:30, cost:3200, tech:'t_spc',   desc:'공수부대를 위한 만능 화기. 소규모 정예의 상징.'},
+  {id:'sf',   name:'특작 장비',     cls:'spc', a:58, d:40, cost:4600, tech:'t_spc2',  desc:'야간작전·파괴장비. 적 본부를 조용히 절단한다.'},
+  {id:'fatman',name:'원자폭탄',      cls:'nuk', a:90, d:0,  cost:9000, tech:'t_nuk',   desc:'단 한 발로 도시 하나를 지도에서 지운다.'},
+  {id:'beam', name:'레이저 포',     cls:'all', a:45, d:35, cost:8000, tech:'t_beam',  desc:'광속의 저격. 모든 병력의 화력을 질적으로 끌어올린다.'},
+  {id:'rail', name:'전자권총',      cls:'all', a:65, d:55, cost:12000,tech:'t_rail',  desc:'관성에 의한 파괴. 방어 개념 자체를 무너뜨린다.'}
+];
+
+/* ============ 기술 ============ */
+const TECHS=[
+  {id:'t_rifle', name:'연발 소총 도입', cat:'보병', cost:90,  req:null,   desc:'보병에게 연발 소총을 지급한다.'},
+  {id:'t_mg',    name:'중기관총 편제', cat:'보병', cost:150, req:'t_rifle', desc:'기관총대를 창설하고 진지 방어 전술을 확립한다.'},
+  {id:'t_eng',   name:'참호 공학',    cat:'보병', cost:140, req:'t_mg',  desc:'공병대를 창설해 요새와 철조망을 뚫는다.'},
+  {id:'t_art',   name:'야전 포술',    cat:'화력', cost:160, req:'t_rifle', desc:'포병을 대량 배치하고 포격 전술을 정리한다.'},
+  {id:'t_cav',   name:'기병 돌파 전술',cat:'기동', cost:120, req:null,   desc:'기병대를 편성해 측면을 돌파한다.'},
+  {id:'t_air',   name:'항공 정찰대',  cat:'공중', cost:200, req:'t_art', desc:'전투기를 도입해 제공권 싸움을 시작한다.'},
+  {id:'t_sub',   name:'잠수함 전술',  cat:'해상', cost:230, req:'t_air', desc:'잠수함대를 조직해 해상로를 끊는다.'},
+  {id:'t_bsh',   name:'무장도크 건조', cat:'해상', cost:300, req:'t_sub', desc:'전함을 진수시켜 해안을 봉쇄한다.'},
+  {id:'t_cav2',  name:'기병 개조 계획',cat:'기동', cost:280, req:'t_cav', desc:'기병에 자동화기와 권총을 지급한다.'},
+  {id:'t_eng2',  name:'폭약·지뢰전',  cat:'보병', cost:300, req:'t_eng', desc:'폭약으로 적 진지를 무력화하고 방어를 강화한다.'},
+  {id:'t_mg2',   name:'고속 기관총',  cat:'보병', cost:420, req:'t_mg',  desc:'연사 속도 혁신으로 방어 화력을 배가시킨다.'},
+  {id:'t_art2',  name:'대구경 야전포',cat:'화력', cost:450, req:'t_art', desc:'150mm 포를 보급해 요새를 직격한다.'},
+  {id:'t_tnk',   name:'기갑사단 편제',cat:'기동', cost:520, req:'t_art2',desc:'전차를 양산하고 기갑 돌파 전술을 확립한다.'},
+  {id:'t_air2',  name:'고성능 전투기',cat:'공중', cost:520, req:'t_air', desc:'엔진 혁신으로 제공권을 장악한다.'},
+  {id:'t_bom',   name:'전략폭격 교리',cat:'공중',cost:600,req:'t_air2',desc:'폭격기 부대를 창설해 적 후방을 파괴한다.'},
+  {id:'t_spc',   name:'공수 특작부대',cat:'특수', cost:560, req:'t_mg2', desc:'특수부대를 창설해 적 심장을 노린다.'},
+  {id:'t_rifle2',name:'정밀 소총 개량',cat:'보병',cost:640, req:'t_mg2', desc:'소총 정확도와 야전 수리를 개선한다.'},
+  {id:'t_art3',  name:'로켓 포병',    cat:'화력', cost:760, req:'t_art2',desc:'다연장 로켓으로 광역 포격을 실현한다.'},
+  {id:'t_tnk2',  name:'중전차 개발',  cat:'기동', cost:840, req:'t_tnk', desc:'두꺼운 장갑과 대구경 포를 결합한다.'},
+  {id:'t_sub2',  name:'핵추진 잠수함',cat:'해상', cost:900, req:'t_bsh', desc:'무제한 항해 가능한 최종 해상병기.'},
+  {id:'t_bsh2',  name:'강습 상륙전',  cat:'해상', cost:880, req:'t_bsh', desc:'해안 점령 속도를 극적으로 끌어올린다.'},
+  {id:'t_spc2',  name:'특작 전술 교본',cat:'특수',cost:980, req:'t_spc', desc:'야간작전과 파괴술을 체계화한다.'},
+  {id:'t_jet',   name:'제트엔진',     cat:'공중', cost:1100,req:'t_air2',desc:'음속 비행이 가능한 항공기를 만든다.'},
+  {id:'t_rocket',name:'유도 로켓',    cat:'특수', cost:1200,req:'t_tnk2',desc:'탄도 로켓으로 지구 반대편까지 도달한다.'},
+  {id:'t_nuk',   name:'원자력 계획',  cat:'특수', cost:1800,req:'t_rocket',desc:'핵을 장악한다. 전쟁의 규칙이 바뀐다.'},
+  {id:'t_rifle3',name:'반자동 소총 보급',cat:'보병', cost:1500,req:'t_rifle2',desc:'전 병력에게 반자동 화기를 지급한다.'},
+  {id:'t_tnk3',  name:'주력전차 체계',cat:'기동', cost:1700,req:'t_tnk2',desc:'전차 생산을 산업화해 전장의 왕좌에 오른다.'},
+  {id:'t_beam',  name:'레이저 병기',  cat:'특수', cost:2600,req:'t_nuk', desc:'광속 무기를 실용화한다.'},
+  {id:'t_rail',  name:'전자권총 연구',cat:'특수', cost:3600,req:'t_beam',desc:'관성 가속 병기. 최종 병기 연구.'}
+];
+const techById=id=>TECHS.find(t=>t.id===id);
+const wepById=id=>WEAPONS.find(w=>w.id===id);
+
+/* ============ 국가 ============ */
+const NATIONS={
+  gb:{n:'영국',        f:'🇬🇧', c:'#4dabf7'},
+  fr:{n:'프랑스',      f:'🇫🇷', c:'#748ffc'},
+  ru:{n:'러시아 제국', f:'🇷🇺', c:'#ff922b'},
+  us:{n:'미국',        f:'🇺🇸', c:'#51cf66'},
+  su:{n:'소련',        f:'☭', c:'#e03131'},
+  cn:{n:'중국',        f:'🇨🇳', c:'#fcc419'},
+  rs:{n:'세르비아',    f:'🇷🇸', c:'#be4bdb'},
+  de:{n:'독일',        f:'🇩🇪', c:'#adb5bd'},
+  au:{n:'오스트리아-헝가리', f:'🇦🇹', c:'#d2a679'},
+  os:{n:'오스만 제국', f:'🇹🇷', c:'#20c997'},
+  it:{n:'이탈리아',    f:'🇮🇹', c:'#69db7c'},
+  jp:{n:'일본',        f:'🇯🇵', c:'#f783ac'},
+  es:{n:'스페인',      f:'🇪🇸', c:'#ffa94d'},
+  tr:{n:'튀르키예',    f:'🇹🇷', c:'#66d9e8'},
+  se:{n:'스웨덴',      f:'🇸🇪', c:'#e599f7'},
+  gr:{n:'그리스',      f:'🇬🇷', c:'#8ce99a'},
+  pt:{n:'포르투갈',    f:'🇵🇹', c:'#ffec99'},
+  no:{n:'노르웨이',    f:'🇳🇴', c:'#99e9f2'}
+};
+
+/* ============ 지명 풀 ============ */
+const NAMES={
+  en:['런던','맨체스터','버밍엄','리버풀','브리스톨','리즈','글래스고','에든버러','카디프','벨파스트','셰필드','뉴캐슬','플리머스','포츠머스','도버','요크','노리치','코번트리','레스터','사우샘프턴'],
+  fr:['파리','리옹','마르세유','툴루즈','보르도','릴','낭트','스트라스부르','그르노블','디종','아미앵','랑스','베르됭','브레스트','루앙','카엔','푸아티에','몽펠리에','낭시','샤토리엔'],
+  ru:['모스크바','상트페테르부르크','키예프','민스크','오데사','하르코프','스몰렌스크','브랸스크','키로프','카잔','바투미','빌뉴스','리가','탈린','아르한게스크','볼로그다','툴라','랴잔','옴스크','예카테린부르크'],
+  en2:['뉴욕','워싱턴','시카고','로스앤젤레스','디트로이트','필라델피아','보스턴','휴스턴','애틀랜타','샌프란시스코','시애틀','댈러스','피츠버그','볼티모어','클리블랜드','밀워키'],
+  zh:['베이징','상하이','난징','광저우','청두','시안','우한','항저우','충칭','톈진','선양','하얼빈','샤먼','쿤밍'],
+  de:['베를린','함부르크','쾰른','드레스덴','뮌헨','프랑크푸르트','쾨니히스베르크','브레멘','슈투트가르트','하노버','마그데부르크','아헨','라이프치히','뉘른베르크','뒤셀도르프','에센','브레슬라우','슈테틴','브라운슈바이크','로스토크'],
+  de2:['비엔나','부다페스트','프라하','브라티슬라바','자그레브','사라예보','류블랴나','크라쿠프','린츠','그라츠','잘츠부르크','테메시바르','체르노비치','모스타르','에사키'],
+  tr:['이스탄불','앙카라','이즈미르','베이루트','다마스쿠스','바그다드','모술','알레포','부르사','아다나','디야르바키르','예루살렘','헤브론','시리아','콘야','트라브존'],
+  it:['로마','밀라노','나폴리','토리노','제노바','베네치아','피렌체','볼로냐','팔레르모','카타니아','부리','모데나','베로나','파르마','브레시아','라벤나'],
+  ja:['도쿄','오사카','나고야','교토','요코하마','고베','히로시마','후쿠오카','센다이','사포로','나가사키','구마모토','마츠야마','가나자와','오카야마'],
+  rs:['베오그라드','노비사드','니시','크라구예바츠','수보티차','제타','크랄레보','발레보'],
+  es:['마드리드','바르셀로나','발렌시아','세빌랴','빌바오','그라나다','사라고사','말라가'],
+  se:['스톡홀름','예테보리','말뫼','예블레','움에오','부루스'],
+  gr:['아테네','테살로니키','파트라스','헤라클리온','라리사','캄보스'],
+  pt:['리스본','포르투','코임브라','브라가','파루','에보라'],
+  no:['오슬로','베르겐','트론헤이엠','스타방에르','드람멘'],
+  any:['모란','샤르만','클로스','베인','리프','토르나','잘리온','그란드','네미르','카루스','오르텐','빌트라','세린','다모르','펜로스','크로마','에르바','토스카','와르나','블레어','히스','아르덴','모이라','셀틱','레온','카일','브렌','수르','미르나','바렌']
+};
+/* ============ 시나리오 ============ */
+const SCENARIOS={
+  ww1:{key:'ww1', name:'1차 세계대전', tag:'1914 · 참호와 기관총', icon:' trench ', era:'ww1',
+    cols:10, rows:7, year:1914,
+    desc:'동맹국과 연합국이 유럽 전체를 삼켰다. 기병은 쇠퇴하고 기관총과 포병이 전선을 지배한다. 좁은 땅에서 밀고 밀리는 참호전의 시대.',
+    playable:['de','au','os','it','gb','fr','ru'],
+    neutrals:['es','se','tr','gr'],
+    bloc:{gb:1,fr:1,ru:1,rs:1,de:2,au:2,os:2,it:2,es:0,se:0,tr:0,gr:0,pt:0,no:0,us:0,su:0,cn:0,jp:0}},
+  ww2:{key:'ww2', name:'2차 세계대전', tag:'1939 · 기갑과 항공', icon:'🛩️', era:'ww2',
+    cols:11, rows:7, year:1939,
+    desc:'전차 사단과 전투기가 전장을 바꿨다. 폭격기가 후방을 불태우고, 원자력이 문턱에 다다랐다. 대륙을 가르는 총공세의 시대.',
+    playable:['de','it','jp','fr','gb','su','us'],
+    neutrals:['es','se','tr','gr','pt'],
+    bloc:{gb:1,fr:1,su:1,us:1,cn:1,de:2,it:2,jp:2,es:0,se:0,tr:0,gr:0,pt:0,no:0,ru:0,au:0,os:0,rs:0}},
+  any:{key:'any', name:'아무 전쟁', tag:'무작위 · 예측 불가', icon:'🎲', era:'any',
+    cols:12, rows:8, year:0,
+    desc:'어느 세계든 상관없다. 국가도, 병기도, 규칙도 전부 무작위로 굴러간다. 1~3차 세계대전을 넘나드는 혼돈의 대전.',
+    playable:[], neutrals:[],
+    bloc:{}}
+};
+
+/* ============ 아무 전쟁 규칙 ============ */
+const ANYRULES=[
+  {id:'mobil', n:'총동원령',       d:'모든 진영의 시작 병력 +60%',            k:'pop',  v:1.6},
+  {id:'wealth',n:'전시 호황',      d:'모든 진영의 예산 수입 +50%',            k:'money',v:1.5},
+  {id:'weak',  n:'낡은 병기',      d:'모든 진영의 화력 -20%',                 k:'atk',  v:0.8},
+  {id:'fierce',n:'잔혹한 전쟁',    d:'모든 진영의 화력 +25%, 피해 심화',      k:'atk',  v:1.25},
+  {id:'cav',   n:'기병의 환생',    d:'기병 계열 병력 화력·방어 +60%',         k:'cav',  v:1.6},
+  {id:'logi',  n:'탄약 무한 공급', d:'보급 수입 +60%',                        k:'supply',v:1.6},
+  {id:'baby',  n:'인구 대폭발',    d:'병력(인력) 수입 +120%',                 k:'man',  v:2.2},
+  {id:'sci',   n:'과학 혁명',      d:'연구 속도 x2.2',                        k:'res',  v:2.2},
+  {id:'fort',  n:'요새 국가',      d:'모든 영지의 기본 방어 +15%',            k:'def',  v:1.15},
+  {id:'steel', n:'강철 전선',      d:'방어력 +25%, 공격력 -10%',              k:'def',  v:1.25},
+  {id:'crazy', n:'무기 중독',      d:'모든 무기 효과 +50%',                   k:'wep',  v:1.5},
+  {id:'huge',  n:'거대 전장',      d:'초대형 맵에서 시작 (영지 +40%)',        k:'size', v:1.4},
+  {id:'poor',  n:'빈곤한 대륙',    d:'모든 진영의 예산 수입 -35%',            k:'money',v:0.65},
+  {id:'elite', n:'정예주의',      d:'모든 병력 방어 +20%, 생산 포인트 -20%',  k:'def',  v:1.2}
+];
+function ruleMod(k){ let m=1; if(!S||!S.rules) return 1;
+  S.rules.forEach(r=>{ if(r.k===k) m*=r.v; }); return m; }
+
+/* ============ 이벤트 ============ */
+const EVENTS=[
+  {n:'전시 채권 발행', ic:'💰', t:'good', f:()=>{const g=Math.round(my().res.m*0.18+600); my().res.m+=g; return '전시 채권으로 예산 '+fmt(g)+' 확보';}},
+  {n:'대규모 징집',   ic:'🧍', t:'good', f:()=>{const g=Math.round(totalPop()*0.05+20000); my().res.p+=g; return '징집으로 병력 '+fmt(g)+'명 증원';}},
+  {n:'과학자 귀순',   ic:'🔬', t:'good', f:()=>{if(my().activeTech){my().techProg+=Math.round(techById(my().activeTech).cost*0.45); return '적국 과학자가 귀순해 연구가 크게 진전';} my().res.m+=800; return '귀순 과학자 보상으로 예산 800 확보';}},
+  {n:'무기 밀수',     ic:'📦', t:'good', f:()=>{addBuff(my(),'atk',1.18,3); return '밀수 무기 확보 → 3턴간 화력 +18%';}},
+  {n:'총공세 개시',   ic:'📣', t:'good', f:()=>{addBuff(my(),'atk',1.3,1); return '총공세 명령 → 이번 턴 화력 +30%';}},
+  {n:'참호 교착',     ic:'🧱', t:'bad',  f:()=>{addBuff(my(),'atk',0.8,2); return '전선 교착 → 2턴간 화력 -20%';}},
+  {n:'독감 대유행',   ic:'🤒', t:'bad',  f:()=>{const c=Math.round(totalTroops()*0.07); killTroops(my(),c); return '병력 '+fmt(c)+' 대 손실 (전염병)';}},
+  {n:'흉작',          ic:'🌾', t:'bad',  f:()=>{addBuff(my(),'supply',0.7,3); return '흉작 → 3턴간 보급 수입 -30%';}},
+  {n:'대규모 파업',   ic:'🏭', t:'bad',  f:()=>{const t=pickOwned(); if(t&&t.ind>1){t.ind--; return t.name+' 산업 -1 (노동자 파업)';} my().res.m=Math.max(0,my().res.m-500); return '공장 마비로 예산 -500';}},
+  {n:'여성 노동력 투입',ic:'👷', t:'good', f:()=>{addBuff(my(),'prod',1.3,2); return '생산 포인트 +30% (2턴)';}},
+  {n:'적국 내전',     ic:'🔥', t:'good', f:()=>{const e=enemyFaction(); if(!e) return '내전 소식이 없어 별다른 변화 없음';
+      const ts=ALLT().filter(t=>t.owner===e.id); if(!ts.length) return '내전 소식이 없어 별다른 변화 없음';
+      const t=pick(ts); const c=Math.round(totalTroopsOf(e)*0.18); killTroops(e,c); return e.name+' 내전으로 '+t.name+' 일대 병력 '+fmt(c)+' 대 붕괴';}},
+  {n:'기술 도청',     ic:'📡', t:'good', f:()=>{if(my().activeTech){my().techProg+=Math.round(techById(my().activeTech).cost*0.6); return '적국 기술 문서 도청 → 연구 대폭 진전';} return '도청했지만 사용할 연구가 없다';}},
+  {n:'외교적 항복 촉구',ic:'🏳️', t:'good', f:()=>{const ns=ALLT().filter(t=>S.factions[t.owner].bloc===0); if(!ns.length) return '중립국이 반응하지 않았다';
+      const t=pick(ns); const prev=t.owner; const m=bestEnemyBorder(); if(!m) return '중립국이 반응하지 않았다'; t.owner=m.owner; return S.factions[prev].name+'의 '+t.name+'이(가) 아군에게 투항';}},
+  {n:'밀수품 적치',   ic:'🥫', t:'good', f:()=>{addBuff(my(),'money',1.25,3); return '3턴간 예산 수입 +25%';}},
+  {n:'병기 개량 운동',ic:'⚙️', t:'good', f:()=>{addBuff(my(),'wep',1.25,4); return '4턴간 모든 무기 효과 +25%';}},
+  {n:'전쟁 피로',     ic:'😴', t:'bad',  f:()=>{addBuff(my(),'def',0.85,2); return '전쟁 피로 → 2턴간 방어력 -15%';}}
+];
+
+/* ---------- 아무 전쟁 생성 ---------- */
+function genAnyScenario(){
+  const SC=SCENARIOS.any;
+  const pool=['아르','베르','카드','릴','노르','오스트','잘','트레','빌','그라','멘','토르','에리','판','제브','루마','셀','모아','브렌','키엘'];
+  const suf=['아 제국','니아 연방','리아 왕국',' 공화국',' 제국',' 연방',' 대공국'];
+  const flags=['⚜️','🎖️','🚩','🏴','🛡️','🔱','🏛️','⛵','⚔️','🌋'];
+  const cols=['#e4572e','#2e86ab','#f2b134','#3a7d44','#8367c7','#c0428a','#17bebb','#d4a373','#7fb069','#b5179e','#5f6caf','#ef8354'];
+  const used=new Set(); const main=[];
+  for(let i=0;i<6;i++){
+    let nm,guard=0; do{ nm=pick(pool)+pick(suf); guard++; }while(used.has(nm)&&guard<300); used.add(nm);
+    const id='f'+i; NATIONS[id]={n:nm,f:flags[i],c:cols[i]}; main.push(id);
+  }
+  const nb=[];
+  for(let i=0;i<3;i++){
+    let nm,guard=0; do{ nm=pick(pool)+pick(suf); guard++; }while(used.has(nm)&&guard<300); used.add(nm);
+    const id='n'+i; NATIONS[id]={n:nm,f:flags[6+i],c:cols[6+i]}; nb.push(id);
+  }
+  SC.playable=main; SC.neutrals=nb; SC.bloc={};
+  main.forEach((id,i)=>SC.bloc[id]=(i<3?1:2));
+  nb.forEach(id=>SC.bloc[id]=0);
+  ANY_PREVIEW=[...ANYRULES].sort(()=>Math.random()-0.5).slice(0,3);
+  SC.desc='무작위 규칙이 판을 뒤흔든다. 국적도 병기도 규칙도 상관없다 — 다만 살아남아야 한다.';
+}
+
+/* ============ 게임 생성 ============ */
+let S=null;
+const MAP={size:40,ox:0,oy:0,hover:null};
+
+function makeFaction(id,name,flag,color,bloc,isPlayer){
+  return {id,name,flag,color,bloc,isPlayer:!!isPlayer,defeated:false,
+    res:{m:4000,p:200000}, weapons:[], techs:[], activeTech:null, techProg:0, buffs:[],
+    ai:{aggro:0.5}};
+}
+function addBuff(f,k,v,turns){ f.buffs.push({k,v,t:turns}); }
+function getMod(f,k){ let m=1; f.buffs.forEach(b=>{ if(b.k===k) m*=b.v; }); return m; }
+function my(){ return S.factions[S.mine]; }
+function ALLT(){ return S.landArr.map(i=>S.territories[i]); }
+function totalPop(){ return ALLT().filter(t=>t.owner===S.mine).reduce((a,t)=>a+t.pop,0); }
+function totalTroops(){ return ALLT().filter(t=>t.owner===S.mine).reduce((a,t)=>a+sum(t.troops),0); }
+function totalTroopsOf(f){ return ALLT().filter(t=>t.owner===f.id).reduce((a,t)=>a+sum(t.troops),0); }
+function sum(o){ let s=0; for(const k in o) s+=o[k]; return s; }
+function killTroops(f,count){
+  let left=count;
+  const ts=ALLT().filter(t=>t.owner===f.id && sum(t.troops)>0);
+  ts.sort(()=>Math.random()-0.5);
+  for(const t of ts){
+    if(left<=0) break;
+    const total=sum(t.troops); if(total<=0) continue;
+    const take=Math.min(total, Math.ceil(left));
+    let removed=0;
+    for(const k in t.troops){
+      if(removed>=take) break;
+      const r=Math.round(t.troops[k]*take/total);
+      const d=Math.min(t.troops[k], r);
+      t.troops[k]-=d; removed+=d;
+      if(t.troops[k]<=0) delete t.troops[k];
+    }
+    left-=removed;
+  }
+}
+function pickOwned(){ const ts=ALLT().filter(t=>t.owner===S.mine); return ts.length?pick(ts):null; }
+function enemyFaction(){
+  const c=ALLT().map(t=>S.factions[t.owner]).filter(f=>f.bloc!==0 && f.bloc!==my().bloc && !f.defeated);
+  return c.length?pick(c):null;
+}
+function bestEnemyBorder(){
+  const mine=ALLT().filter(t=>t.owner===S.mine);
+  const cands=[];
+  mine.forEach(t=>neighbors(t.id).forEach(id=>{
+    const n=S.territories[id]; if(S.factions[n.owner].bloc!==0 && S.factions[n.owner].bloc!==my().bloc) cands.push(n);
+  }));
+  if(cands.length) return pick(cands);
+  const e=enemyFaction(); if(e){ const ts=ALLT().filter(t=>t.owner===e.id); if(ts.length) return pick(ts); }
+  return mine.length?pick(mine):null;
+}
+
+/* ---------- 맵 생성 ---------- */
+function neighbors(id){
+  const r=Math.floor(id/S.cols), c=id%S.cols, out=[];
+  const even=(r%2===0);
+  const dirs= even? [[1,0],[0,-1],[-1,-1],[-1,0],[-1,1],[0,1]] : [[1,0],[1,-1],[0,-1],[-1,0],[0,1],[1,1]];
+  dirs.forEach(d=>{ const nc=c+d[0], nr=r+d[1];
+    if(nc<0||nr<0||nc>=S.cols||nr>=S.rows) return;
+    const nid=nr*S.cols+nc; if(S.land[nid]) out.push(nid); });
+  return out;
+}
+function hexCenter(id){
+  const r=Math.floor(id/S.cols), c=id%S.cols, sz=MAP.size;
+  return {x:MAP.ox+Math.sqrt(3)*sz*(c+0.5*(r&1)), y:MAP.oy+1.5*sz*r};
+}
+function genLand(cols,rows,dens){
+  const land=new Array(cols*rows).fill(false);
+  for(let r=0;r<rows;r++) for(let c=0;c<cols;c++){
+    const edge=(r===0||c===0||r===rows-1||c===cols-1);
+    let v=Math.random();
+    if(edge) v+=0.35;
+    land[r*cols+c]= v> (1-dens);
+  }
+  // 가장 큰 연결 컴포넌트만 남기기
+  const seen=new Array(cols*rows).fill(false); let best=[];
+  for(let i=0;i<land.length;i++){
+    if(!land[i]||seen[i]) continue;
+    const q=[i], comp=[]; seen[i]=true;
+    while(q.length){ const x=q.shift(); comp.push(x);
+      const r=Math.floor(x/cols),c=x%cols;
+      [[1,0],[-1,0],[0,1],[0,-1]].forEach(d=>{
+        const nc=c+d[0],nr=r+d[1]; if(nc<0||nr<0||nc>=cols||nr>=rows) return;
+        const nid=nr*cols+nc; if(land[nid]&&!seen[nid]){seen[nid]=true;q.push(nid);} });
+    }
+    if(comp.length>best.length) best=comp;
+  }
+  const keep=new Array(cols*rows).fill(false); best.forEach(x=>keep[x]=true);
+  for(let i=0;i<land.length;i++) land[i]=keep[i];
+  return land;
+}
+function langOf(nid){
+  const map={gb:'en',us:'en2',ru:'ru',su:'ru',cn:'zh',de:'de',au:'de2',os:'tr',it:'it',jp:'ja',rs:'rs',fr:'fr',es:'es',se:'se',gr:'gr',pt:'pt',no:'no'};
+  return map[nid]||'any';
+}
+function nameFor(lang,used){
+  const pool=NAMES[lang]||NAMES.any;
+  const free=pool.filter(n=>!used.has(n));
+  if(free.length) return pick(free);
+  const orgs=['','제','동','서','남','북','신','대'];
+  const suf=['',' 2',' 3',' 4',' 5',' 6',' 7',' 8',' 9',' 10',' 신도',' 구역'];
+  for(let i=0;i<400;i++){
+    const g=pick(orgs)+pick(pool)+pick(suf);
+    if(!used.has(g)) return g;
+  }
+  return pick(pool)+'-'+used.size;
+}
+function terrainAt(land,id,cols,rows){
+  const r=Math.floor(id/cols), c=id%cols;
+  let coast=false;
+  [[1,0],[-1,0],[0,1],[0,-1]].forEach(d=>{
+    const nc=c+d[0],nr=r+d[1];
+    if(nc<0||nr<0||nc>=cols||nr>=rows){coast=true;return;}
+    if(!land[nr*cols+nc]) coast=true;
+  });
+  if(coast && Math.random()<0.72) return 'coast';
+  const v=Math.random();
+  if(v<0.12) return 'city';
+  if(v<0.30) return 'forest';
+  if(v<0.46) return 'hill';
+  if(v<0.58) return 'mtn';
+  if(v<0.66) return 'swamp';
+  if(v<0.74) return 'desert';
+  return 'plain';
+}
+/* ---------- 새 게임 ---------- */
+function newGame(scenKey,nationKey,diff){
+  const SC=SCENARIOS[scenKey];
+  S={sc:scenKey, era:SC.era, cols:SC.cols, rows:SC.rows, diff:diff, mine:nationKey,
+      turn:1, year:SC.year||2026, month:1, rules:[], log:[], land:null, territories:[],
+      factions:{}, over:null, sel:null, tab:'army', seq:0};
+
+  let nationIds=[];
+  if(scenKey==='any'){
+    if(SC.playable.length<4) genAnyScenario();
+    S.rules = (ANY_PREVIEW&&ANY_PREVIEW.length)? ANY_PREVIEW.slice()
+             : [...ANYRULES].sort(()=>Math.random()-0.5).slice(0,3);
+    S.cols = hasRule('huge') ? 13 : 12;
+    S.rows = hasRule('huge') ? 11 : 10;
+  }
+  SC.neutrals=SC.neutrals.slice(0,3);
+  nationIds=[...SC.playable, ...SC.neutrals];
+
+  S.land=genLand(S.cols,S.rows,0.66);
+
+  // 진영 구성
+  const usedNames=new Set();
+  nationIds.forEach(id=>{
+    const N=NATIONS[id];
+    const f=makeFaction(id,N.n,N.f,N.c,SC.bloc[id],false);
+    S.factions[id]=f;
+  });
+  S.factions[S.mine].isPlayer=true;
+
+  // 영지 생성
+  const landCells=[]; for(let i=0;i<S.cols*S.rows;i++) if(S.land[i]) landCells.push(i);
+  const terr={};
+  const langUsed={};
+  landCells.forEach(id=>{
+    const r=Math.floor(id/S.cols);
+    const ownerOrigin=null;
+    terr[id]={id, r, c:id%S.cols, name:null, owner:null, terrain:terrainAt(S.land,id,S.cols,S.rows),
+      ind:0, pop:0, fort:0, troops:{}, capital:false, pp:0, attacked:0, moved:0};
+  });
+
+  // 수도 선정 (가장 멀리 떨어지게)
+  const mains=SC.playable.map(id=>({id, cap:null}));
+  const caps=[];
+  const first=pick(landCells); caps.push(first); mains[0].cap=first;
+  while(caps.length<mains.length){
+    let best=-1,bd=-1;
+    landCells.forEach(c=>{
+      if(caps.includes(c)) return;
+      const p=hexCenterOfRaw(c,S.cols);
+      let md=1e9; caps.forEach(cc=>{ const q=hexCenterOfRaw(cc,S.cols); md=Math.min(md,(p.x-q.x)**2+(p.y-q.y)**2); });
+      if(md>bd){bd=md;best=c;}
+    });
+    if(best<0) break;
+    caps.push(best); mains[caps.length-1].cap=best;
+  }
+  mains.forEach((m,i)=>{ if(m.cap!=null){ terr[m.cap].capital=true; } });
+
+  // 중립국도 수도를 하나씩 확보 (침범 금지 구역)
+  const nCaps=[];
+  SC.neutrals.forEach((nid,ni)=>{
+    let best=-1,bd=-1;
+    landCells.forEach(c=>{
+      if(caps.includes(c)) return;
+      const p=hexCenterOfRaw(c,S.cols);
+      let md=1e9; caps.concat(nCaps).forEach(cc=>{ const q=hexCenterOfRaw(cc,S.cols); md=Math.min(md,(p.x-q.x)**2+(p.y-q.y)**2); });
+      if(md>bd){bd=md;best=c;}
+    });
+    if(best>=0){ caps.push(best); nCaps.push(best); terr[best].capital=true; mains.push({id:nid,cap:best}); }
+  });
+
+  // 확장 — 진영별 라운드로빈으로 공정하게 성장
+  const owner=new Array(S.cols*S.rows).fill(null);
+  caps.forEach((cap,i)=>{ owner[cap]=mains[i].id; });
+  const buckets={};
+  const enqueue=(id,fid)=>{ (buckets[fid]=buckets[fid]||[]).push([id,fid]); };
+  caps.forEach((cap,i)=>enqueue(cap,mains[i].id));
+  const order=Object.keys(buckets).sort(()=>Math.random()-0.5);
+  const nclaim={}; SC.neutrals.forEach(id=>nclaim[id]=0);
+  let progress=true;
+  while(progress){
+    progress=false;
+    for(const fid of order){
+      const b=buckets[fid]; if(!b||!b.length) continue;
+      const ent=b.shift(); progress=true;
+      const id=ent[0];
+      if(owner[id]!==fid) continue;
+      const r=Math.floor(id/S.cols), c=id%S.cols;
+      const even=(r%2===0);
+      const dirs= even? [[1,0],[0,-1],[-1,-1],[-1,0],[-1,1],[0,1]] : [[1,0],[1,-1],[0,-1],[-1,0],[0,1],[1,1]];
+      dirs.forEach(d=>{
+        const nc=c+d[0], nr=r+d[1];
+        if(nc<0||nr<0||nc>=S.cols||nr>=S.rows) return;
+        const nid=nr*S.cols+nc;
+        if(!S.land[nid]) return;
+        if(owner[nid]!=null) return;
+        if(terr[nid].capital) return;
+        if(SC.bloc[fid]===0){ if(nclaim[fid]>=3) return; nclaim[fid]++; }
+        owner[nid]=fid; enqueue(nid,fid);
+      });
+    }
+  }
+  // 남은 칸(고립)은 중립 진영에 배정
+  const neutrals=SC.neutrals;
+  landCells.forEach(id=>{
+    if(owner[id]) return;
+    const nbs=neighborsDirect(id,S.cols,S.rows,S.land);
+    let o=null;
+    for(const n of nbs){ if(owner[n]){ o=owner[n]; break; } }
+    if(o) owner[id]=o;
+    else if(neutrals.length) owner[id]=pick(neutrals);
+    else owner[id]=S.mine;
+  });
+
+  // 속성 부여
+  landCells.forEach(id=>{
+    const t=terr[id]; const o=owner[id];
+    t.owner=o;
+    const lang=langOf(o);
+    langUsed[lang]=langUsed[lang]||new Set();
+    t.name=nameFor(lang,langUsed[lang]); langUsed[lang].add(t.name);
+    const isCity=t.terrain==='city';
+    t.ind= isCity? ri(3,5) : (t.capital? ri(3,4) : ri(1,3));
+    t.pop= Math.round(ri(280,900)*1000*(isCity?1.7:1)*(t.capital?1.4:1));
+    t.fort= t.capital? ri(2,3) : (Math.random()<0.3?1:0);
+    if(t.terrain==='mtn'||t.terrain==='hill') t.fort+= (Math.random()<0.5?1:0);
+    // 초기 병력
+    const base= t.capital? ri(70,110) : ri(16,42);
+    const ro=initialRoster(S.era);
+    const arms={}; let left=base;
+    const first=pick(ro); arms[first]=Math.round(base*0.55); left-=arms[first];
+    const second=pick(ro); arms[second]=(arms[second]||0)+Math.round(left*0.7);
+    const third=pick(ro); arms[third]=(arms[third]||0)+(left-Math.round(left*0.7));
+    for(const k in arms){ if(arms[k]>0) arms[k]=arms[k]; else delete arms[k]; }
+    t.troops=arms;
+    if(Math.random()<0.35 && !arms['inf']) t.troops['inf']=ri(4,12);
+  });
+
+  S.territories=terr;
+  S.landArr=landCells;
+
+  // 시작 자원
+  Object.values(S.factions).forEach(f=>{
+    const ts=landCells.map(id=>terr[id]).filter(t=>t.owner===f.id);
+    const scale = f.isPlayer? 1 : 1;
+    f.res.m=Math.round(5000+ts.length*900);
+    f.res.p=Math.round((ts.reduce((a,t)=>a+t.pop,0))*0.08);
+    if(S.sc==='any'){
+      if(hasRule('mobil')) f.res.p=Math.round(f.res.p*1.6);
+      if(hasRule('poor')) f.res.m=Math.round(f.res.m*0.7);
+      if(hasRule('wealth')) f.res.m=Math.round(f.res.m*1.4);
+    }
+    f.ai={aggro:[0.35,0.5,0.68,0.85][diff]+(f.bloc===0?-0.35:0)};
+    ts.forEach(t=>{ t.pp=prodOf(t); });
+  });
+
+  // 연구 시작 훅
+  Object.values(S.factions).forEach(f=>{ if(f.bloc!==0) f.activeTech=firstTechFor(f); });
+
+  addLog('war', '<b>'+S.factions[S.mine].name+'</b>이 전쟁에 돌입했습니다. 영지를 선택해 생산하고 인접한 적 영지를 공격하세요.');
+  if(S.sc==='any') addLog('sys','무작위 규칙: '+S.rules.map(r=>r.n).join(' · '));
+  saveGame();
+  return S;
+}
+function hasRule(id){ return !!(S&&S.rules&&S.rules.find(r=>r.id===id)); }
+function hasRuleValue(k){ return !!(S&&S.rules&&S.rules.find(r=>r.k===k)); }
+function hexCenterOfRaw(id,cols){
+  const r=Math.floor(id/cols), c=id%cols;
+  return {x:Math.sqrt(3)*(c+0.5*(r&1)), y:1.5*r};
+}
+function neighborsDirect(id,cols,rows,land){
+  const r=Math.floor(id/cols), c=id%cols, out=[];
+  const even=(r%2===0);
+  const dirs= even? [[1,0],[0,-1],[-1,-1],[-1,0],[-1,1],[0,1]] : [[1,0],[1,-1],[0,-1],[-1,0],[0,1],[1,1]];
+  dirs.forEach(d=>{ const nc=c+d[0], nr=r+d[1];
+    if(nc<0||nr<0||nc>=cols||nr>=rows) return;
+    const nid=nr*cols+nc; if(land[nid]) out.push(nid); });
+  return out;
+}
+function initialRoster(era){
+  if(era==='ww1') return ['inf','inf','inf','cav','mg','art','eng'];
+  if(era==='ww2') return ['inf','inf','inf','mg','art','tnk','ftr'];
+  return ['inf','inf','mg','art','cav','tnk','ftr','bom','eng'];
+}
+function firstTechFor(f){
+  const era=S.era;
+  const avail=TECHS.filter(t=>techEra(t).includes(era) && !f.techs.includes(t.id) && (!t.req||f.techs.includes(t.req)));
+  return avail.length?avail[0].id:null;
+}
+function techEra(t){
+  const WW1=['t_rifle','t_mg','t_eng','t_art','t_cav','t_air','t_sub','t_bsh','t_cav2','t_eng2','t_mg2','t_art2','t_air2','t_rifle2','t_bsh2'];
+  const WW2=TECHS.map(x=>x.id).filter(x=>!['t_beam','t_rail'].includes(x));
+  if(S.era==='any') return ['any'];
+  if(S.era==='ww1') return WW1.includes(t.id)?['ww1']:[];
+  return WW2.includes(t.id)?['ww2']:[];
+}
+/* ============ 경제 / 국력 ============ */
+function prodOf(t){
+  const f=S.factions[t.owner];
+  let v=t.ind*22 + (t.terrain==='city'?18:0) + (t.capital?10:0);
+  return Math.max(6, Math.round(v*getMod(f,'prod')*ruleMod('prod')));
+}
+function incomeOf(f){
+  const ts=ALLT().filter(t=>t.owner===f.id); let m=0;
+  ts.forEach(t=>{ m+= t.ind*70 + (t.terrain==='city'?80:0) + (t.capital?60:0); });
+  return Math.round(m*getMod(f,'money')*ruleMod('money'));
+}
+function supplyIncome(f){
+  const ts=ALLT().filter(t=>t.owner===f.id); let m=0;
+  ts.forEach(t=>{ m+= t.ind*60 + (t.terrain==='city'?70:0) + 55; });
+  return Math.round(m*getMod(f,'supply')*ruleMod('supply'));
+}
+function supplyUpkeep(f){
+  let m=0; ALLT().filter(t=>t.owner===f.id).forEach(t=>{
+    for(const k in t.troops) m+= t.troops[k]*(UNITS[k]?UNITS[k].sup:0); });
+  return Math.round(m);
+}
+function manpowerGain(f){
+  let p=0; ALLT().filter(t=>t.owner===f.id).forEach(t=>p+=t.pop);
+  return Math.round(p*0.008*getMod(f,'man')*ruleMod('man'));
+}
+function researchGain(f){
+  let r=0, city=0, cap=0;
+  ALLT().filter(t=>t.owner===f.id).forEach(t=>{ r+=t.ind; if(t.terrain==='city')city++; if(t.capital)cap++; });
+  return Math.round((r*3 + city*6 + cap*5)*getMod(f,'res')*ruleMod('res'));
+}
+function wepBonus(f,cls){
+  let a=0,d=0;
+  f.weapons.forEach(id=>{
+    const w=wepById(id); if(!w) return;
+    if(w.cls!==cls && w.cls!=='all') return;
+    a+=w.a; d+=w.d;
+  });
+  const extra=ruleMod('wep')*getMod(f,'wep');
+  a*=extra; d*=extra;
+  if(cls==='cav' && hasRule('cav')){ a+=60; d+=60; }
+  return {a,d};
+}
+function atkMod(f){ return ruleMod('atk')*getMod(f,'atk'); }
+function defMod(f){ return ruleMod('def')*getMod(f,'def'); }
+function isCoast(t){
+  const r=t.r,c=t.c;
+  const even=(r%2===0);
+  const dirs= even? [[1,0],[0,-1],[-1,-1],[-1,0],[-1,1],[0,1]] : [[1,0],[1,-1],[0,-1],[-1,0],[0,1],[1,1]];
+  for(const d of dirs){ const nc=c+d[0],nr=r+d[1];
+    if(nc<0||nr<0||nc>=S.cols||nr>=S.rows) return true;
+    if(!S.land[nr*S.cols+nc]) return true; }
+  return false;
+}
+function powerOf(t,kind){
+  const f=S.factions[t.owner];
+  const coast=(t.terrain==='coast'||isCoast(t));
+  let p=0,hp=0,air=0,sea=0,siege=0,total=0;
+  for(const k in t.troops){
+    const n=t.troops[k]; if(n<=0) continue;
+    const u=UNITS[k]; if(!u) continue;
+    total+=n;
+    if(u.sea && !coast) continue;
+    const wb=wepBonus(f,k);
+    const stat = kind==='atk' ? u.atk*(1+wb.a/100) : u.def*(1+wb.d/100);
+    const mult = kind==='atk' ? atkMod(f) : defMod(f);
+    p+=n*stat*mult; hp+=n*u.hp;
+    if(u.air) air+=n; if(u.sea) sea+=n;
+    if(k==='eng'||k==='spc') siege+=n;
+  }
+  return {p,hp,air,sea,siege,total};
+}
+function armyLine(army){
+  const parts=[];
+  for(const k in army){ if(army[k]>0&&UNITS[k]) parts.push(UNITS[k].icon+' '+UNITS[k].name+' '+fmt(army[k])); }
+  return parts.join(' · ')||'—';
+}
+function availableUnits(f){
+  return Object.values(UNITS).filter(u=>u.tag.includes(S.era) && (!u.req || f.techs.includes(u.req)));
+}
+
+/* ============ 행동 ============ */
+function canRecruit(f,t,u){
+  if(t.pp<u.pts) return {ok:false,why:'생산 포인트 부족'};
+  if(f.res.m<u.m) return {ok:false,why:'예산 부족'};
+  if(f.res.p<u.p) return {ok:false,why:'병력(인력) 부족'};
+  if(u.sea && !(t.terrain==='coast'||isCoast(t))) return {ok:false,why:'해안 영지만 가능'};
+  if(u.id==='bsh' && t.terrain!=='coast') return {ok:false,why:'항구(해안)에서만 건조'};
+  return {ok:true};
+}
+function produce(tid,unitId,count){
+  const t=S.territories[tid], f=S.factions[t.owner];
+  if(!f.isPlayer) return;
+  const u=UNITS[unitId]; let c=0;
+  for(let i=0;i<count;i++){
+    const chk=canRecruit(f,t,u); if(!chk.ok) break;
+    t.pp-=u.pts; f.res.m-=u.m; f.res.p-=u.p;
+    t.troops[unitId]=(t.troops[unitId]||0)+1; c++;
+  }
+  if(c>0){ flash(t.name+'에 '+u.name+' '+c+'대 생산'); renderAll(); }
+}
+function build(tid,kind){
+  const t=S.territories[tid], f=S.factions[t.owner];
+  if(!f.isPlayer) return;
+  if(kind==='ind'){
+    if(t.ind>=6) return toast('산업은 최대 6입니다',true);
+    const cost=500*(t.ind+1);
+    if(f.res.m<cost) return toast('예산이 부족합니다',true);
+    f.res.m-=cost; t.ind++; flash(t.name+' 산업 +1 (총 '+t.ind+')');
+  }else{
+    if(t.fort>=5) return toast('요새는 최대 5입니다',true);
+    const cost=350*(t.fort+1);
+    if(f.res.m<cost) return toast('예산이 부족합니다',true);
+    f.res.m-=cost; t.fort++; flash(t.name+' 요새 +1 (총 '+t.fort+')');
+  }
+  renderAll();
+}
+function moveTroops(srcId,dstId,ratio){
+  const s=S.territories[srcId], d=S.territories[dstId];
+  if(!s||!d) return;
+  if(s.owner!==S.mine) return;
+  if(!neighbors(srcId).includes(dstId)) return;
+  if(d.owner!==S.mine) return;
+  if(sum(s.troops)<=0) return toast('이동할 병력이 없습니다',true);
+  let moved=0;
+  for(const k in s.troops){
+    const n=Math.floor(s.troops[k]*ratio);
+    if(n<=0) continue;
+    s.troops[k]-=n; d.troops[k]=(d.troops[k]||0)+n; moved+=n;
+    if(s.troops[k]<=0) delete s.troops[k];
+  }
+  if(moved>0) flash('병력 '+fmt(moved)+'대 이동 완료');
+  renderAll();
+}
+function startResearch(id){
+  const f=my(), T=techById(id);
+  if(!T) return;
+  if(f.techs.includes(id)) return;
+  if(T.req && !f.techs.includes(T.req)) return toast('선행 기술이 필요합니다',true);
+  if(!techEra(T).includes(S.era)) return;
+  f.activeTech=id; f.techProg=0;
+  toast('🔬 연구 시작: '+T.name);
+  renderAll();
+}
+function unlockWeapon(id){
+  const f=my(), w=wepById(id);
+  if(!w||f.weapons.includes(id)) return;
+  if(!f.techs.includes(w.tech)) return toast('먼저 관련 기술을 연구해야 합니다',true);
+  if(f.res.m<w.cost) return toast('예산이 부족합니다',true);
+  f.res.m-=w.cost; f.weapons.push(id);
+  toast('⚒ 무기 도입: '+w.name);
+  addLog('good','<b>'+w.name+'</b> 도입 완료');
+  renderAll();
+}
+/* ============ 전투 ============ */
+function applyDamage(army,dmg){
+  let total=0; for(const k in army) total+=army[k]*UNITS[k].hp;
+  if(total<=0||dmg<=0) return {lost:0,by:{}};
+  let lost=0; const by={};
+  for(const k in army){
+    const u=UNITS[k];
+    const share=army[k]*u.hp/total;
+    const raw=dmg*share;
+    let l=Math.floor(raw/u.hp);
+    if(raw-l*u.hp > Math.random()*u.hp) l++;
+    l=Math.min(army[k],l);
+    if(l>0){ army[k]-=l; lost+=l; by[k]=(by[k]||0)+l; if(army[k]<=0) delete army[k]; }
+  }
+  return {lost,by};
+}
+function simBattle(src,dst,commit){
+  const A=S.factions[src.owner], D=S.factions[dst.owner];
+  const aArmy={}, orig={};
+  for(const k in src.troops){
+    const n=Math.floor(src.troops[k]*commit);
+    if(n>0){ aArmy[k]=n; orig[k]=n; }
+  }
+  if(sum(aArmy)<=0) return null;
+  const dArmy={}; for(const k in dst.troops) if(dst.troops[k]>0) dArmy[k]=dst.troops[k];
+  if(sum(dArmy)<=0) return {win:'atk', aArmy, dArmy:{}, orig, aLoss:{}, dLoss:{}, rounds:[], aHP0:1,dHP0:1,aHP:1,dHP:0, empty:true};
+
+  const aHP0=sumHP(aArmy), dHP0=sumHP(dArmy);
+  let aHP=aHP0, dHP=dHP0;
+  const siege=sumOf(aArmy,['eng','spc']);
+  const terrDef=(1 + (TERRAIN[dst.terrain].def + dst.fort*0.12)*ruleMod('def'))*(siege>0?0.55:1);
+  const rounds=[];
+  const aLoss={}, dLoss={};
+  for(let r=1;r<=14 && aHP>0 && dHP>0;r++){
+    let aFire=fireOf(aArmy,A,'atk')*(0.85+Math.random()*0.3)*atkMod(A);
+    let dFire=fireOf(dArmy,D,'def')*(0.85+Math.random()*0.3)*defMod(D)*terrDef;
+    const aAir=countOf(aArmy,'air'), dAir=countOf(dArmy,'air');
+    if(aAir>0&&dAir===0) aFire*=1.18;
+    if(dAir>0&&aAir===0) dFire*=1.18;
+    const K=0.16;
+    const dDmg=aFire*K, aDmg=dFire*K;
+    const rl=applyDamage(dArmy,dDmg), rr=applyDamage(aArmy,aDmg);
+    dHP=Math.max(0,dHP-dDmg); aHP=Math.max(0,aHP-aDmg);
+    mergeInto(dLoss,rl.by); mergeInto(aLoss,rr.by);
+    rounds.push({r,
+      aFire:Math.round(aFire), dFire:Math.round(dFire),
+      aLost:rl.lost, dLost:rr.lost,
+      aHP:aHP/aHP0, dHP:dHP/dHP0});
+    if(sum(dArmy)<=0){ dHP=0; break; }
+    if(sum(aArmy)<=0){ aHP=0; break; }
+  }
+  let win;
+  if(dHP<=0) win='atk';
+  else if(aHP<=0) win='def';
+  else win = (dHP/dHP0)<0.30 ? 'atk' : 'def';
+  return {win,aArmy,dArmy,orig,aLoss,dLoss,rounds,aHP0,dHP0,aHP,dHP};
+}
+function sumHP(a){ let s=0; for(const k in a) s+=a[k]*UNITS[k].hp; return s||1; }
+function fireOf(a,f,kind){ let s=0; for(const k in a){ const u=UNITS[k]; if(!u) continue;
+  const wb=wepBonus(f,k); s+=a[k]*(kind==='atk'?u.atk*(1+wb.a/100):u.def*(1+wb.d/100)); } return s; }
+function countOf(a,type){ let s=0; for(const k in a){ const u=UNITS[k]; if(!u) continue;
+  if(type==='air'&&u.air) s+=a[k]; if(type==='sea'&&u.sea) s+=a[k]; } return s; }
+function sumOf(a,ids){ let s=0; ids.forEach(id=>{ s+=a[id]||0; }); return s; }
+function mergeInto(dst,src){ for(const k in src) dst[k]=(dst[k]||0)+src[k]; }
+
+function retreatArmy(t,army){
+  if(sum(army)<=0) return;
+  const fid=t.owner;
+  let cands=neighbors(t.id).map(i=>S.territories[i]).filter(x=>x.owner===fid);
+  if(!cands.length) cands=neighbors(t.id).map(i=>S.territories[i]).filter(x=>{const o=S.factions[x.owner]; return o.bloc===S.factions[fid].bloc && o.bloc!==0;});
+  if(!cands.length) return;
+  const dest=pick(cands);
+  for(const k in army) dest.troops[k]=(dest.troops[k]||0)+army[k];
+}
+function performAttack(srcId,dstId,animate){
+  const src=S.territories[srcId], dst=S.territories[dstId];
+  if(!src||!dst) return false;
+  if(src.owner!==S.mine) return false;
+  if(!neighbors(srcId).includes(dstId)) return false;
+  if(S.factions[dst.owner].bloc===S.factions[src.owner].bloc) return false;
+  if(sum(src.troops)<=0) return toast('공격할 병력이 없습니다',true);
+  if(src.attacked>=S.turn) return toast('이미 이번 턴에 공격했습니다',true);
+  const commit=Number(($('#commit-sel')&&$('#commit-sel').value)||1);
+  const res=simBattle(src,dst,commit);
+  if(!res) return toast('투입할 병력이 없습니다',true);
+  const finish=()=>{ applyBattleResult(src,dst,res); src.attacked=S.turn; renderAll(); checkVictory(); saveGame(); };
+  if(animate){ animateBattle(src,dst,res,finish); }
+  else { applyBattleResult(src,dst,res); src.attacked=S.turn; addLog('war',battleSummary(src,dst,res)); checkVictory(); }
+  return true;
+}
+function battleSummary(src,dst,res){
+  const w=res.win==='atk';
+  return (w?'⚔ <b>'+src.name+'</b> → '+dst.name+' 점령! ':'🛡 '+dst.name+' 방어 성공! ')+
+    '아군 -'+fmt(sum(res.aLoss))+'대 · 적군 -'+fmt(sum(res.dLoss))+'대';
+}
+function applyBattleResult(src,dst,res){
+  const attacker=S.factions[src.owner];
+  if(res.win==='atk'){
+    // 방어 잔여 병력 후퇴
+    if(res.dArmy && sum(res.dArmy)>0){ retreatArmy(dst,res.dArmy); }
+    // 미투입 병력은 원래 자리에
+    for(const k in res.orig){ src.troops[k]=(src.troops[k]||0)-res.orig[k]; if(src.troops[k]<=0) delete src.troops[k]; }
+    const prevOwner=dst.owner;
+    dst.owner=src.owner;
+    dst.troops={};
+    for(const k in res.aArmy) if(res.aArmy[k]>0) dst.troops[k]=res.aArmy[k];
+    if(dst.capital) addLog('bad','<b>'+S.factions[prevOwner].name+'</b>의 수도 <b>'+dst.name+'</b>이(가) 함락당했습니다.');
+    else addLog('good','<b>'+dst.name+'</b> 점령 (지형: '+TERRAIN[dst.terrain].name+')');
+    markDefeated(prevOwner);
+  }else{
+    // 공격 실패 — 투입분만 소멸/복귀
+    for(const k in res.orig){ src.troops[k]=(src.troops[k]||0)-res.orig[k]; if(src.troops[k]<=0) delete src.troops[k]; }
+    for(const k in res.aArmy){ if(res.aArmy[k]>0) src.troops[k]=(src.troops[k]||0)+res.aArmy[k]; }
+    dst.troops={};
+    for(const k in res.dArmy) if(res.dArmy[k]>0) dst.troops[k]=res.dArmy[k];
+    addLog('bad','<b>'+dst.name+'</b> 방어 성공 — 공격군은 격퇴되었습니다.');
+  }
+}
+function markDefeated(fid){
+  const f=S.factions[fid];
+  if(!f||f.defeated) return;
+  if(ALLT().some(t=>t.owner===fid)) return;
+  f.defeated=true;
+  addLog(f.bloc===my().bloc?'bad':'good','🏳️ <b>'+f.name+'</b>이(가) 모든 영지를 상실하고 항복했습니다.');
+  if(!f.isPlayer) toast('🏳️ '+f.name+' 항복');
+}
+
+/* ============ AI ============ */
+function aiPhase(){
+  Object.values(S.factions).forEach(f=>{
+    if(f.isPlayer||f.defeated) return;
+    aiProduce(f);
+    if(f.bloc!==0){ aiResearch(f); aiAttack(f); }
+  });
+}
+function aiProduce(f){
+  const ts=ALLT().filter(t=>t.owner===f.id);
+  const pool=availableUnits(f);
+  if(!pool.length) return;
+  ts.forEach(t=>{
+    let guard=40;
+    while(t.pp>2 && guard-->0){
+      const u=pool[ri(0,pool.length-1)];
+      if(t.pp<u.pts||f.res.m<u.m||f.res.p<u.p) continue;
+      if(u.sea && t.terrain!=='coast') continue;
+      t.pp-=u.pts; f.res.m-=u.m; f.res.p-=u.p;
+      t.troops[u.id]=(t.troops[u.id]||0)+1;
+    }
+    // 남은 예산이 많으면 방어 강화
+    if(t.pp>=4 && f.res.m>1500 && Math.random()<0.4 && t.fort<5){
+      const c=350*(t.fort+1); if(f.res.m>=c){ f.res.m-=c; t.fort++; }
+    }
+  });
+}
+function aiResearch(f){
+  if(f.activeTech && f.techs.includes(f.activeTech)) f.activeTech=null;
+  if(f.activeTech) return;
+  const avail=TECHS.filter(t=>techEra(t).includes(S.era) && !f.techs.includes(t.id) && (!t.req||f.techs.includes(t.req)));
+  if(!avail.length) return;
+  const pickT = Math.random()<0.7? avail[0] : pick(avail);
+  f.activeTech=pickT.id;
+  if(Math.random()<0.5){ // 무기 우선 도입
+    const w=WEAPONS.filter(w=>f.techs.includes(w.tech)&&!f.weapons.includes(w.id)&&f.res.m>w.cost);
+    if(w.length) f.weapons.push(pick(w).id);
+  }
+}
+function aiAttack(f){
+  const aggro=f.ai.aggro*(0.8+S.diff*0.1);
+  let attacks=0; const maxAtt=[1,1,2,3][S.diff];
+  const thr=[1.6,1.4,1.28,1.18][S.diff];
+  const ts=ALLT().filter(t=>t.owner===f.id && sum(t.troops)>6).sort(()=>Math.random()-0.5);
+  for(const src of ts){
+    if(attacks>=maxAtt) break;
+    if(src.attacked>=S.turn) continue;
+    const cand=neighbors(src.id).map(i=>S.territories[i])
+      .filter(d=>S.factions[d.owner].bloc!==f.bloc)
+      .map(d=>{
+        const A=powerOf(src,'atk'), D=powerOf(d,'def');
+        const fort=(1+TERRAIN[d.terrain].def+d.fort*0.12);
+        const ratio= A.p/(D.p*fort+1);
+        return {d,ratio,A,D};
+      }).filter(x=>x.ratio>thr).sort((a,b)=>b.ratio-a.ratio);
+    if(!cand.length) continue;
+    const target=cand[Math.random()<0.7?0:Math.min(1,cand.length-1)];
+    if(Math.random()>aggro) continue;
+    const res=simBattle(src,target.d,0.8);
+    if(!res) continue;
+    applyBattleResult(src,target.d,res);
+    src.attacked=S.turn;
+    attacks++;
+    addLog(S.factions[target.d.owner].bloc===my().bloc?'bad':'war',
+      '⚔ '+f.name+'이(가) '+target.d.name+'을(를) 공격 — '+(res.win==='atk'?'점령 성공':'방어 성공'));
+  }
+}
+
+/* ============ 턴 진행 ============ */
+function endTurn(){
+  if(S.over) return;
+  aiPhase();
+  advanceTurn();
+  if(!S.over) checkVictory();
+  renderAll(); saveGame();
+}
+function advanceTurn(){
+  S.turn++; S.month++; if(S.month>12){ S.month=1; S.year++; }
+  Object.values(S.factions).forEach(f=>{
+    f.buffs=f.buffs.filter(b=>{ b.t--; return b.t>0; });
+    if(f.defeated) return;
+    f.res.m+=incomeOf(f);
+    f.res.p+=manpowerGain(f);
+    const up=supplyUpkeep(f), inc=supplyIncome(f);
+    if(up>inc){
+      const ratio=clamp((up-inc)/Math.max(1,up),0,0.5);
+      const lost=Math.round(totalTroopsOf(f)*ratio*0.35);
+      if(lost>0){ killTroops(f,lost);
+        if(f.isPlayer) addLog('bad','📦 보급 부족 — 병력 '+fmt(lost)+'대가 이탈했습니다.'); }
+    }
+    if(f.activeTech){
+      f.techProg+=researchGain(f);
+      let T=techById(f.activeTech);
+      while(T && f.techProg>=T.cost){
+        f.techProg-=T.cost; f.techs.push(T.id);
+        if(f.isPlayer){ addLog('good','🔬 연구 완료: <b>'+T.name+'</b>'); toast('🔬 연구 완료: '+T.name); }
+        f.activeTech=nextTechFor(f);
+        T=f.activeTech?techById(f.activeTech):null;
+      }
+    }
+  });
+  S.landArr.forEach(id=>{ const t=S.territories[id]; t.pp=prodOf(t); t.attacked=0; });
+  fireEvent();
+}
+function nextTechFor(f){
+  const avail=TECHS.filter(t=>techEra(t).includes(S.era) && !f.techs.includes(t.id) && (!t.req||f.techs.includes(t.req)));
+  return avail.length?avail[0].id:null;
+}
+function fireEvent(){
+  const roll=Math.random();
+  if(roll<0.45){
+    const e=pick(EVENTS);
+    let msg=''; try{ msg=e.f(); }catch(err){ msg='특별한 변화가 없었습니다.'; }
+    if(msg){
+      addLog(e.t==='bad'?'bad':'good', e.ic+' <b>'+e.n+'</b> — '+msg);
+      toast(e.ic+' '+e.n, e.t==='bad');
+    }
+  }else if(roll<0.62){
+    const f=pick(Object.values(S.factions).filter(x=>!x.isPlayer&&!x.defeated&&x.bloc!==0));
+    if(f){ f.res.m=Math.round(f.res.m*0.1)+800; }
+  }
+}
+function checkVictory(){
+  const me=my();
+  if(me.defeated || !ALLT().some(t=>t.owner===S.mine)){
+    S.over='lose'; return showOver(false);
+  }
+  const enemies=Object.values(S.factions).filter(f=>f.bloc!==0 && f.bloc!==me.bloc);
+  const allDead=enemies.every(f=>f.defeated);
+  const myLand=ALLT().filter(t=>S.factions[t.owner].bloc!==0);
+  const allMine=myLand.every(t=>S.factions[t.owner].bloc===me.bloc);
+  if(allDead&&allMine){ S.over='win'; return showOver(true); }
+}
+/* ============ 렌더 : 상단 ============ */
+function renderTop(){
+  const f=my();
+  $('#my-color').style.background=f.color;
+  $('#my-flag').textContent=f.flag;
+  $('#my-name').textContent=f.name;
+  const months=['1','2','3','4','5','6','7','8','9','10','11','12'];
+  $('#turn-info').textContent='턴 '+S.turn+' · '+(S.year||'???')+'년 '+months[S.month-1]+'월 · '+SCENARIOS[S.sc].name;
+  const inc=incomeOf(f), up=supplyUpkeep(f), sin=supplyIncome(f), net=sin-up;
+  const r=f.res;
+  const tech=f.activeTech?techById(f.activeTech):null;
+  const prog=tech?Math.min(100,Math.round(f.techProg/tech.cost*100)):0;
+  $('#res-row').innerHTML=
+    box('💰','예산',fmt(r.m),'')+
+    box('📦','보급',(net>=0?'+':'')+fmt(net),net<0?'warn':'')+
+    box('🧍','병력',fmt(r.p),'')+
+    box('🔬','연구',tech?(prog+'%'):'-',tech?'':'')+
+    box('📈','수입','+'+fmt(inc),'')+
+    box('⚙️','생산',fmt(totalPP()),'');
+}
+function box(ic,label,val,cls){
+  return '<div class="res '+cls+'"><span class="ic">'+ic+'</span><span class="lbl">'+label+'</span><b>'+val+'</b></div>';
+}
+function totalPP(){ return S.landArr.filter(id=>S.territories[id].owner===S.mine)
+  .reduce((a,id)=>a+S.territories[id].pp,0); }
+
+/* ============ 렌더 : 좌측 ============ */
+function renderLeft(){
+  const p=$('#left-pane');
+  if(S.sel==null||!S.territories[S.sel]){
+    p.innerHTML='<div class="sec-title">지도 안내</div>'+
+      '<div class="empty">① 자신의 영지를 클릭하면 생산·이동·공격 명령을 내릴 수 있습니다.<br>'+
+      '② 적 영지를 클릭하면 인접한 아군 영지에서 공격할 수 있습니다.<br>'+
+      '③ 우측 탭에서 <b style="color:#e8b04b">병력 · 무기 · 연구 · 정보</b>를 관리합니다.<br>'+
+      '④ 모든 준비가 끝나면 <b style="color:#e8b04b">턴 종료</b>를 눌러 다음 해로 넘어갑니다.</div>';
+    return;
+  }
+  const t=S.territories[S.sel], f=S.factions[t.owner];
+  const mine=(t.owner===S.mine);
+  let h='';
+  h+='<div class="sec-title">📍 영지 정보</div>';
+  h+='<div class="kv"><span>이름</span><span>'+t.name+(t.capital?' ⭐':'')+'</span></div>';
+  h+='<div class="kv"><span>소유</span><span style="color:'+f.color+'">'+f.flag+' '+f.name+'</span></div>';
+  h+='<div class="kv"><span>지형</span><span>'+TERRAIN[t.terrain].icon+' '+TERRAIN[t.terrain].name+' (방어 +'+Math.round(TERRAIN[t.terrain].def*100)+'%)</span></div>';
+  h+='<div class="kv"><span>산업 / 요새</span><span>'+t.ind+' / '+t.fort+'</span></div>';
+  h+='<div class="kv"><span>인구</span><span>'+fmt(t.pop)+'</span></div>';
+  h+='<div class="kv"><span>생산 포인트</span><span>'+t.pp+'</span></div>';
+  h+='<div class="sec-title">⚔ 주둔 병력 (총 '+fmt(sum(t.troops))+'대)</div>';
+  const keys=Object.keys(t.troops).filter(k=>t.troops[k]>0);
+  if(!keys.length) h+='<div class="empty">주둔 병력이 없습니다.</div>';
+  keys.slice(0,14).forEach(k=>{
+    const u=UNITS[k]; if(!u) return;
+    const wb=wepBonus(f,k);
+    h+='<div class="troop-row"><span class="ic">'+u.icon+'</span><span class="nm">'+u.name+
+      '<div class="hp">공 '+Math.round(u.atk*(1+wb.a/100))+' · 방 '+Math.round(u.def*(1+wb.d/100))+' · 유지 '+u.sup+'</div></span>'+
+      '<span class="ct">'+fmt(t.troops[k])+'</span></div>';
+  });
+  if(keys.length>14) h+='<div class="empty">외 '+ (keys.length-14) +'종 추가 병력</div>';
+
+  if(!mine){
+    // 적/중립/동맹 영지
+    const attackers=S.landArr.filter(id=>S.territories[id].owner===S.mine && neighbors(id).includes(t.id) && sum(S.territories[id].troops)>0);
+    if(f.bloc!==my().bloc){
+      h+='<div class="sec-title">🎯 공격 작전</div>';
+      if(!attackers.length) h+='<div class="empty">인접한 아군 영지가 없습니다.</div>';
+      attackers.forEach(id=>{
+        const s=S.territories[id];
+        const A=powerOf(s,'atk'), D=powerOf(t,'def');
+        const fort=(1+TERRAIN[t.terrain].def+t.fort*0.12);
+        const ratio=A.p/(D.p*fort+1);
+        const done=s.attacked>=S.turn;
+        h+='<div class="target"><div class="tt"><span>'+s.name+' → '+t.name+'</span><span style="color:'+(ratio>1.4?'#46c26a':ratio>1?'#e8b04b':'#e5484d')+'">배율 '+ratio.toFixed(2)+'</span></div>'+
+          '<div class="tm">공격력 '+fmt(A.p)+' vs 방어력 '+fmt(Math.round(D.p*fort))+' · 잔여 명령 '+(done?'없음':'가능')+'</div>'+
+          '<button class="atk-btn" data-atk="'+id+'" '+((done||ratio<0.5)?'disabled':'')+'>'+ratio.toFixed(2)+' : 1 돌격 개시</button></div>';
+      });
+      h+='<div class="empty">하단 투입 비율을 정해 공격하세요. 공격은 영지당 턴당 1회.</div>';
+    }else{
+      h+='<div class="sec-title">🤝 동맹 영지</div><div class="empty">같은 진영의 영지입니다. 병력은 서로 이동할 수 없습니다.</div>';
+    }
+    p.innerHTML=h; bindLeft(); return;
+  }
+
+  // 아군 영지 — 생산
+  h+='<div class="sec-title">🏭 생산 명령 (남은 포인트 '+t.pp+')</div>';
+  const pool=availableUnits(f);
+  if(!pool.length) h+='<div class="empty">아직 생산할 병력 기술이 없습니다. 우측 [연구] 탭을 확인하세요.</div>';
+  h+='<div class="prod-grid">';
+  pool.forEach(u=>{
+    const c=canRecruit(f,t,u);
+    h+='<button class="pbtn" data-prod="'+u.id+'" '+(c.ok?'':'disabled')+' title="'+u.desc+'">'+
+      '<div class="t">'+u.icon+' '+u.name+'</div>'+
+      '<div class="c">⏱'+u.pts+' · 💰<i>'+u.m+'</i> · 🧍'+fmt(u.p)+'</div></button>';
+  });
+  h+='</div>';
+  h+='<div style="display:flex;gap:6px;margin-top:7px">'+
+     '<button class="mini" data-prod10="1">×10 생산</button>'+
+     '<button class="mini" data-maxpp="1">포인트 소진까지</button></div>';
+
+  h+='<div class="sec-title">🏗 영지 개발</div>';
+  h+='<div style="display:flex;gap:6px">'+
+     '<button class="mini" data-build="ind" '+(t.ind>=6?'disabled':'')+'>산업 +1 ('+fmt(500*(t.ind+1))+')</button>'+
+     '<button class="mini" data-build="fort" '+(t.fort>=5?'disabled':'')+'>요새 +1 ('+fmt(350*(t.fort+1))+')</button></div>';
+
+  h+='<div class="sec-title">🚚 병력 이동 (인접 아군)</div>';
+  const friends=neighbors(t.id).map(i=>S.territories[i]).filter(x=>x.owner===S.mine);
+  if(!friends.length) h+='<div class="empty">이동 가능한 인접 아군 영지가 없습니다.</div>';
+  else{
+    h+='<select id="move-dst" style="width:100%">'+friends.map(x=>'<option value="'+x.id+'">'+x.name+' (병력 '+fmt(sum(x.troops))+')</option>').join('')+'</select>';
+    h+='<div class="move-row">'+
+      '<button class="btn" data-move="0.25">25%</button>'+
+      '<button class="btn" data-move="0.5">50%</button>'+
+      '<button class="btn" data-move="1">100%</button></div>';
+  }
+
+  h+='<div class="sec-title">🎯 공격 대상</div>';
+  const foes=neighbors(t.id).map(i=>S.territories[i]).filter(x=>S.factions[x.owner].bloc!==my().bloc);
+  if(!foes.length) h+='<div class="empty">인접한 적 영지가 없습니다.</div>';
+  const done=t.attacked>=S.turn;
+  foes.forEach(d=>{
+    const A=powerOf(t,'atk'), D=powerOf(d,'def');
+    const fort=(1+TERRAIN[d.terrain].def+d.fort*0.12);
+    const ratio=A.p/(D.p*fort+1);
+    h+='<div class="target"><div class="tt"><span>'+d.name+' ('+S.factions[d.owner].name+')</span>'+
+      '<span style="color:'+(ratio>1.4?'#46c26a':ratio>1?'#e8b04b':'#e5484d')+'">배율 '+ratio.toFixed(2)+'</span></div>'+
+      '<div class="tm">'+TERRAIN[d.terrain].icon+' '+TERRAIN[d.terrain].name+' · 요새 '+d.fort+' · 적 병력 '+fmt(sum(d.troops))+'대</div>'+
+      '<button class="atk-btn" data-atk2="'+d.id+'" '+((done||sum(t.troops)<=0)?'disabled':'')+'>'+(done?'이미 공격함':'돌격 개시')+'</button></div>';
+  });
+  p.innerHTML=h; bindLeft();
+}
+function bindLeft(){
+  const p=$('#left-pane');
+  p.querySelectorAll('[data-prod]').forEach(b=>b.onclick=()=>{
+    const n=p.querySelector('[data-prod10]')&&p.querySelector('[data-prod10]').classList.contains('on')?10:1;
+    produce(S.sel,b.dataset.prod,n);
+  });
+  const b10=p.querySelector('[data-prod10]');
+  if(b10) b10.onclick=()=>{ b10.classList.toggle('on'); };
+  const bm=p.querySelector('[data-maxpp]');
+  if(bm) bm.onclick=()=>{
+    const t=S.territories[S.sel], f=my(), pool=availableUnits(f);
+    let guard=300;
+    while(t.pp>2&&guard-->0){
+      const u=pool[ri(0,pool.length-1)];
+      const c=canRecruit(f,t,u); if(!c.ok) continue;
+      produce(S.sel,u.id,1);
+    }
+    renderAll();
+  };
+  p.querySelectorAll('[data-build]').forEach(b=>b.onclick=()=>build(S.sel,b.dataset.build));
+  const mv=p.querySelector('#move-dst');
+  p.querySelectorAll('[data-move]').forEach(b=>b.onclick=()=>{
+    if(!mv) return;
+    moveTroops(S.sel,Number(mv.value),Number(b.dataset.move));
+  });
+  p.querySelectorAll('[data-atk]').forEach(b=>b.onclick=()=>{
+    const src=Number(b.dataset.atk);
+    openAttack(src,S.sel);
+  });
+  p.querySelectorAll('[data-atk2]').forEach(b=>b.onclick=()=>{
+    openAttack(S.sel,Number(b.dataset.atk2));
+  });
+}
+function openAttack(srcId,dstId){
+  performAttack(srcId,dstId,true);
+}
+/* ============ 렌더 : 우측 탭 ============ */
+function renderRight(){
+  const p=$('#right-pane');
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.t===S.tab));
+  if(S.tab==='army') return void(p.innerHTML=tabArmy());
+  if(S.tab==='weapon') return void(p.innerHTML=tabWeapon());
+  if(S.tab==='tech') return void(p.innerHTML=tabTech());
+  if(S.tab==='info') return void(p.innerHTML=tabInfo());
+  p.innerHTML=tabLog();
+}
+function tabArmy(){
+  const f=my();
+  const totals={};
+  S.landArr.forEach(id=>{ const t=S.territories[id]; if(t.owner!==S.mine) return;
+    for(const k in t.troops) totals[k]=(totals[k]||0)+t.troops[k]; });
+  const keys=Object.keys(totals).sort((a,b)=>totals[b]-totals[a]);
+  let h='<div class="sec-title">🪖 전체 병력 현황 (총 '+fmt(sum(totals))+'대)</div>';
+  if(!keys.length) h+='<div class="empty">보유한 병력이 없습니다.</div>';
+  keys.forEach(k=>{
+    const u=UNITS[k]; if(!u) return;
+    const wb=wepBonus(f,k);
+    h+='<div class="troop-row"><span class="ic">'+u.icon+'</span><span class="nm">'+u.name+
+      '<div class="hp">화력 '+fmt(Math.round(totals[k]*u.atk*(1+wb.a/100)))+' · 유지보급 '+fmt(totals[k]*u.sup)+'</div></span>'+
+      '<span class="ct">'+fmt(totals[k])+'</span></div>';
+  });
+  const up=supplyUpkeep(f), sin=supplyIncome(f);
+  h+='<div class="sec-title">📦 보급 / 유지비</div>';
+  h+='<div class="kv"><span>보급 수입</span><span>+'+fmt(sin)+'</span></div>';
+  h+='<div class="kv"><span>병력 유지비</span><span style="color:'+(up>sin?'#e5484d':'#46c26a')+'">−'+fmt(up)+'</span></div>';
+  h+='<div class="kv"><span>순이익</span><span style="color:'+((sin-up)>=0?'#46c26a':'#e5484d')+'">'+((sin-up)>=0?'+':'')+fmt(sin-up)+'</span></div>';
+  if(up>sin) h+='<div class="empty" style="color:#e5484d">⚠ 유지비가 수입보다 높습니다. 매 턴 병력이 이탈합니다!</div>';
+
+  h+='<div class="sec-title">🏰 영지 목록 ('+myTerr().length+'개)</div>';
+  myTerr().sort((a,b)=>sum(b.troops)-sum(a.troops)).forEach(t=>{
+    h+='<div class="target" data-go="'+t.id+'" style="cursor:pointer"><div class="tt"><span>'+t.name+(t.capital?' ⭐':'')+'</span>'+
+      '<span>'+fmt(sum(t.troops))+'대</span></div>'+
+      '<div class="tm">산업 '+t.ind+' · 요새 '+t.fort+' · 인구 '+fmt(t.pop)+'</div></div>';
+  });
+  return h;
+}
+function myTerr(){ return S.landArr.map(id=>S.territories[id]).filter(t=>t.owner===S.mine); }
+function tabWeapon(){
+  const f=my();
+  const availList=WEAPONS.filter(w=>{ const t=techById(w.tech); return !!t && techEra(t).includes(S.era); });
+  let h='<div class="sec-title">⚒ 무기고 (도입 '+f.weapons.length+' / '+availList.length+')</div>';
+  const list=availList.slice().sort((a,b)=>{
+    const ra=f.techs.includes(a.tech)?0:1, rb=f.techs.includes(b.tech)?0:1;
+    return ra-rb || a.cost-b.cost;
+  });
+  list.forEach(w=>{
+    const owned=f.weapons.includes(w.id);
+    const unlocked=f.techs.includes(w.tech);
+    const T=techById(w.tech);
+    h+='<div class="tcard '+(unlocked?'':'locked')+'"><div class="th"><b>'+w.name+'</b>'+
+      (owned?'<span class="mini on">장착 완료</span>': unlocked?'<button class="mini" data-wep="'+w.id+'">도입 '+fmt(w.cost)+'</button>':'<span class="mini">🔒 연구 필요</span>')+
+      '</div><div class="td">'+w.desc+'</div>'+
+      '<div class="eff">'+clsName(w.cls)+' → 화력 +'+w.a+'% / 방어 +'+w.d+'%</div>'+
+      '<div class="td">조건: <b style="color:#e8b04b">'+(T?T.name:'-')+'</b></div></div>';
+  });
+  return h;
+}
+function clsName(c){
+  if(c==='all') return '전 병력 공통';
+  return UNITS[c]?UNITS[c].icon+' '+UNITS[c].name:c;
+}
+function tabTech(){
+  const f=my();
+  const T=f.activeTech?techById(f.activeTech):null;
+  let h='<div class="sec-title">🔬 연구 현황</div>';
+  if(T){
+    const pct=Math.min(100,f.techProg/T.cost*100);
+    h+='<div class="tcard"><div class="th"><b>'+T.name+'</b><span class="mini on">'+Math.floor(pct)+'%</span></div>'+
+      '<div class="td">'+T.desc+'</div><div class="bar"><i style="width:'+pct+'%"></i></div>'+
+      '<div class="td">'+fmt(f.techProg)+' / '+fmt(T.cost)+' · 턴당 +'+fmt(researchGain(f))+'</div>'+
+      '<button class="mini" id="tech-cancel" style="margin-top:7px">연구 중단</button></div>';
+  }else{
+    h+='<div class="empty">진행 중인 연구가 없습니다. 아래에서 하나를 선택하세요.</div>';
+  }
+  const cats=['보병','화력','기동','공중','해상','특수'];
+  cats.forEach(cat=>{
+    const list=TECHS.filter(t=>t.cat===cat && techEra(t).includes(S.era));
+    if(!list.length) return;
+    h+='<div class="sec-title">'+cat+' 기술</div>';
+    list.forEach(t=>{
+      const done=f.techs.includes(t.id);
+      const req=t.req?techById(t.req):null;
+      const reqOk=!req||f.techs.includes(req);
+      const isAct=f.activeTech===t.id;
+      const need=Math.max(0,Math.ceil(t.cost-f.techProg));
+      let state;
+      if(done) state='<span class="mini on">✅ 완료</span>';
+      else if(isAct) state='<span class="mini on">연구 중</span>';
+      else if(!reqOk) state='<span class="mini">🔒 '+(req?req.name:'-')+'</span>';
+      else state='<button class="mini" data-tech="'+t.id+'">연구 시작</button>';
+      h+='<div class="tcard '+(done?'':'')+'"><div class="th"><b>'+t.name+'</b>'+state+'</div>'+
+        '<div class="td">'+t.desc+'</div>'+
+        '<div class="td">필요 연구점 <b style="color:#e8b04b">'+fmt(t.cost)+'</b>'+(done?'':(reqOk?' · 남은 '+fmt(need):''))+'</div></div>';
+    });
+  });
+  return h;
+}
+function tabInfo(){
+  const list=Object.values(S.factions).map(f=>{
+    const ts=S.landArr.map(id=>S.territories[id]).filter(t=>t.owner===f.id);
+    return {f, land:ts.length, troops:totalTroopsOf(f), money:f.res.m};
+  }).sort((a,b)=>(b.land*1000+b.troops)-(a.land*1000+a.troops));
+  let h='<div class="sec-title">🌍 세력 랭킹</div>';
+  list.forEach((x,i)=>{
+    const rel=x.f.bloc===0?'중립':(x.f.bloc===my().bloc?'아군':'적');
+    h+='<div class="rank '+(x.f.isPlayer?'me':'')+' '+(x.f.defeated?'dead':'')+'">'+
+      '<span class="n">'+(i+1)+'</span><span class="c" style="background:'+x.f.color+'"></span>'+
+      '<span class="nm">'+x.f.flag+' '+x.f.name+'<div class="st">'+rel+' · 영지 '+x.land+' · 병력 '+fmt(x.troops)+'</div></span>'+
+      '<span class="st">'+(x.f.defeated?'항복':(x.f.isPlayer?'나':rel))+'</span></div>';
+  });
+  h+='<div class="sec-title">📜 전쟁 규칙</div>';
+  if(S.rules.length) S.rules.forEach(r=>h+='<div class="tcard"><div class="th"><b>'+r.n+'</b></div><div class="td">'+r.d+'</div></div>');
+  else h+='<div class="empty">특별한 규칙 없음 (정통 전쟁)</div>';
+  h+='<div class="sec-title">🎖 승리 조건</div>';
+  h+='<div class="empty">적 진영 전체를 항복시키고, 중립을 제외한 모든 영지를 아군 진영이 장악하면 승리합니다.</div>';
+  return h;
+}
+function tabLog(){
+  let h='<div class="sec-title">📖 전쟁 기록 (최신순)</div>';
+  if(!S.log.length) h+='<div class="empty">아직 기록이 없습니다.</div>';
+  S.log.slice(0,80).forEach(l=>{
+    h+='<div class="logline '+l.type+'">['+l.turn+'턴] '+l.html+'</div>';
+  });
+  return h;
+}
+function addLog(type,html){
+  S.log.unshift({turn:S.turn,type,html});
+  if(S.log.length>260) S.log.length=260;
+  if(S.tab==='log') renderRight();
+}
+function renderHUD(){
+  const mine=myTerr().length;
+  const en=S.landArr.filter(id=>S.territories[id].owner!==S.mine && S.factions[S.territories[id].owner].bloc!==my().bloc).length;
+  $('#map-hud').innerHTML='<div class="chip">🏴 영지 '+mine+'</div>'+
+    '<div class="chip">🚩 적 영지 '+en+'</div>'+
+    '<div class="chip">⚔ 공격 가능 '+(myTerr().filter(t=>t.attacked<S.turn&&sum(t.troops)>0).length)+'</div>';
+}
+function renderBottom(){
+  const f=my();
+  let msg='';
+  if(S.sel!=null&&S.territories[S.sel]){
+    const t=S.territories[S.sel];
+    msg='<b style="color:#e8b04b">'+t.name+'</b> · '+TERRAIN[t.terrain].icon+' '+TERRAIN[t.terrain].name+' · 산업 '+t.ind+' · 요새 '+t.fort+' · 병력 '+fmt(sum(t.troops))+'대 · 생산 '+t.pp;
+  }else{
+    msg='영지를 선택하세요. 아군 영지 = 생산/이동/공격 · 적 영지 = 정보';
+  }
+  $('#bot-msg').innerHTML=msg;
+}
+
+/* ============ 캔버스 지도 ============ */
+function hexPath(ctx,x,y,s){
+  ctx.beginPath();
+  for(let i=0;i<6;i++){
+    const a=Math.PI/180*(60*i-30);
+    const px=x+s*Math.cos(a), py=y+s*Math.sin(a);
+    if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+  }
+  ctx.closePath();
+}
+function drawMap(){
+  const cv=$('#map'); if(!cv||!S) return;
+  const w=cv.clientWidth, h=cv.clientHeight;
+  if(!w||!h) return;
+  const dpr=window.devicePixelRatio||1;
+  if(cv.width!==Math.round(w*dpr)||cv.height!==Math.round(h*dpr)){ cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr); }
+  const ctx=cv.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  const g=ctx.createLinearGradient(0,0,0,h);
+  g.addColorStop(0,'#071726'); g.addColorStop(1,'#040d16');
+  ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+  const size=Math.min(w/(Math.sqrt(3)*(S.cols+0.5)), h/(1.5*(S.rows-1)+2))*0.94;
+  MAP.size=Math.max(16,size);
+  MAP.ox=(w-(Math.sqrt(3)*MAP.size*(S.cols+0.5)))/2+Math.sqrt(3)*MAP.size/2;
+  MAP.oy=(h-(1.5*MAP.size*(S.rows-1)+2*MAP.size))/2+MAP.size;
+
+  const sel=S.sel;
+  const atkTargets=new Set();
+  if(sel!=null&&S.territories[sel]&&S.territories[sel].owner===S.mine){
+    neighbors(sel).forEach(id=>{ if(S.factions[S.territories[id].owner].bloc!==my().bloc) atkTargets.add(id); });
+  }
+  S.landArr.forEach(id=>{
+    const t=S.territories[id];
+    const {x,y}=hexCenter(id);
+    const f=S.factions[t.owner];
+    const isMine=(t.owner===S.mine);
+    hexPath(ctx,x,y,MAP.size-1);
+    ctx.save();
+    ctx.globalAlpha=isMine?0.95:(f.bloc===my().bloc?0.7:0.6);
+    ctx.fillStyle=f.color;
+    ctx.fill();
+    ctx.restore();
+    // 테두리
+    if(id===sel){ ctx.strokeStyle='#ffffff'; ctx.lineWidth=3; }
+    else if(atkTargets.has(id)){ ctx.strokeStyle='#ff6b6b'; ctx.lineWidth=2.2; ctx.setLineDash([5,4]); }
+    else if(id===MAP.hover){ ctx.strokeStyle='#e8b04b'; ctx.lineWidth=2.4; }
+    else { ctx.strokeStyle='rgba(0,0,0,.55)'; ctx.lineWidth=1.4; ctx.setLineDash([]); }
+    hexPath(ctx,x,y,MAP.size-1); ctx.stroke(); ctx.setLineDash([]);
+    if(!f.isPlayer&&!isMine&&f.bloc!==my().bloc&&f.bloc!==0){
+      ctx.strokeStyle='rgba(255,90,90,.75)'; ctx.lineWidth=1.6;
+      hexPath(ctx,x,y,MAP.size-4); ctx.stroke();
+    }
+    const s=MAP.size;
+    // 지형
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.font=Math.round(s*0.44)+'px sans-serif';
+    ctx.globalAlpha=.95; ctx.fillText(TERRAIN[t.terrain].icon,x,y-s*0.06); ctx.globalAlpha=1;
+    // 이름
+    if(s>=22){
+      ctx.font='700 '+Math.round(Math.max(7,s*0.19))+'px Malgun Gothic, sans-serif';
+      ctx.fillStyle='#fff'; ctx.shadowColor='rgba(0,0,0,.85)'; ctx.shadowBlur=4;
+      ctx.fillText((t.capital?'★':'')+t.name, x, y-s*0.6);
+      ctx.shadowBlur=0;
+    }
+    // 병력
+    const tot=sum(t.troops);
+    ctx.font='800 '+Math.round(Math.max(8,s*0.24))+'px Malgun Gothic, sans-serif';
+    ctx.fillStyle= isMine? '#fff5cc' : (f.bloc===my().bloc?'#d8ffe4':'#ffe0e0');
+    ctx.shadowColor='rgba(0,0,0,.9)'; ctx.shadowBlur=4;
+    ctx.fillText(tot?fmt(tot):'—', x, y+s*0.55);
+    ctx.shadowBlur=0;
+    // 요새
+    if(t.fort>0){ ctx.font=Math.round(Math.max(8,s*0.17))+'px sans-serif'; ctx.fillStyle='rgba(255,255,255,.75)';
+      ctx.fillText('🛡'+t.fort, x, y+s*0.83); }
+  });
+}
+function mapHit(mx,my_){
+  let best=null,bd=1e9;
+  S.landArr.forEach(id=>{
+    const {x,y}=hexCenter(id);
+    const d=(x-mx)**2+(y-my_)**2;
+    if(d<bd){bd=d;best=id;}
+  });
+  return (best!=null && bd < (MAP.size*1.05)**2)?best:null;
+}
+/* ============ 전투 연출 ============ */
+let _btlTimer=null, _btlDone=null, _btlRes=null;
+function animateBattle(src,dst,res,done){
+  clearTimeout(_btlTimer); _btlDone=null; _btlRes=res;
+  const A=S.factions[src.owner], D=S.factions[dst.owner];
+  $('#modal-battle').classList.add('on');
+  $('#btl-title').textContent=src.name+' ▶ '+dst.name;
+  $('#btl-log').innerHTML='';
+  $('#btl-foot').style.display='none';
+  $('#btl-bar-a').style.width='100%';
+  $('#btl-bar-d').style.width='100%';
+  const defOrig={}; for(const k in dst.troops) if(dst.troops[k]>0) defOrig[k]=dst.troops[k];
+  $('#btl-atk').innerHTML='<div class="nm"><span style="color:'+A.color+'">'+A.flag+'</span> '+A.name+'</div>'+
+    '<div class="am">투입 병력 '+fmt(sum(res.orig))+'대<div style="margin-top:5px">'+armyLine(res.orig)+'</div></div>';
+  $('#btl-def').innerHTML='<div class="nm"><span style="color:'+D.color+'">'+D.flag+'</span> '+D.name+'</div>'+
+    '<div class="am">방어 병력 '+fmt(sum(defOrig))+'대<div style="margin-top:5px">'+armyLine(defOrig)+'</div>'+
+    '<div style="margin-top:6px">지형 '+TERRAIN[dst.terrain].icon+' '+TERRAIN[dst.terrain].name+' · 요새 🛡'+dst.fort+'</div></div>';
+  let i=0;
+  const line=r=>'<div><span class="r">'+r.r+'차전</span> 화력 <b style="color:#ffd98a">'+fmt(r.aFire)+'</b> vs <b style="color:#ff9b9b">'+fmt(r.dFire)+'</b>'+
+    ' → <span style="color:#ffd98a">아군 -'+fmt(r.aLost)+'</span> · <span style="color:#ff9b9b">적군 -'+fmt(r.dLost)+'</span></div>';
+  const finishAnim=()=>{
+    if(_btlDone) return;
+    const w=res.win==='atk';
+    $('#btl-log').innerHTML+='<div class="result '+(w?'win':'lose')+'">'+(w?'★ 공격 성공 — 영지 점령 ★':'✕ 공격 실패 — 격퇴')+'</div>';
+    $('#btl-log').innerHTML+='<div style="text-align:center;color:#8fa1b3">아군 총 손실 '+fmt(sum(res.aLoss))+'대 · 적군 총 손실 '+fmt(sum(res.dLoss))+'대</div>';
+    $('#btl-log').scrollTop=1e6;
+    $('#btl-bar-a').style.width=(res.aHP/res.aHP0*100)+'%';
+    $('#btl-bar-d').style.width=(res.dHP/res.dHP0*100)+'%';
+    $('#btl-foot').style.display='flex';
+    _btlDone=()=>{ $('#modal-battle').classList.remove('on'); done&&done(); };
+  };
+  const step=()=>{
+    if(i>=res.rounds.length){ finishAnim(); return; }
+    const r=res.rounds[i++];
+    $('#btl-log').innerHTML+=line(r);
+    $('#btl-bar-a').style.width=(r.aHP*100)+'%';
+    $('#btl-bar-d').style.width=(r.dHP*100)+'%';
+    $('#btl-log').scrollTop=1e6;
+    _btlTimer=setTimeout(step,300);
+  };
+  window._btlSkip=()=>{
+    clearTimeout(_btlTimer);
+    if(i<res.rounds.length){
+      let html=''; for(;i<res.rounds.length;i++) html+=line(res.rounds[i]);
+      $('#btl-log').innerHTML+=html;
+    }
+    if(!_btlDone) finishAnim();
+  };
+  step();
+}
+
+/* ============ 토스트 / 메시지 ============ */
+let _flash={t:0,msg:''};
+function toast(msg,bad){
+  const el=document.createElement('div');
+  el.className='toast'+(bad?' bad':'');
+  el.textContent=msg;
+  $('#toasts').appendChild(el);
+  setTimeout(()=>{ el.style.transition='.4s'; el.style.opacity='0'; setTimeout(()=>el.remove(),400); },2200);
+}
+function flash(m){ _flash={t:Date.now(),msg:m}; const el=$('#bot-msg'); if(el) el.innerHTML='✅ '+m; }
+
+/* ============ 렌더 통합 ============ */
+let _raf=false;
+function renderAll(){
+  if(_raf) return; _raf=true;
+  const run=()=>{
+    if(!_raf) return; _raf=false;
+    if(!S) return;
+    renderTop(); renderLeft(); renderRight(); renderHUD(); renderBottom(); drawMap();
+  };
+  requestAnimationFrame(run);
+  setTimeout(run,60);
+}
+function renderBottomIfFresh(){
+  if(Date.now()-_flash.t>2600) renderBottom();
+}
+
+/* ============ 스크린 ============ */
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  $('#'+id).classList.add('active');
+}
+let pendingScen='ww1', pendingNat=null, pendingDiff=1;
+let ANY_PREVIEW=null;
+
+function buildTitleCards(){
+  const wrap=$('#scenario-cards'); wrap.innerHTML='';
+  Object.values(SCENARIOS).forEach(sc=>{
+    const el=document.createElement('div');
+    el.className='card'; el.dataset.sc=sc.key;
+    const badge= sc.key==='any'?'<span class="tag">RANDOM</span>':(sc.key==='ww1'?'<span class="tag">1914–1918</span>':'<span class="tag">1939–1945</span>');
+    el.innerHTML=badge+'<div class="big">'+(sc.key==='ww1'?'🪖':sc.key==='ww2'?'🛩️':'🎲')+'</div>'+
+      '<h3>'+sc.name+'</h3><p>'+sc.desc+'</p>';
+    el.onclick=()=>{ pendingScen=sc.key; openNationSelect(sc.key); };
+    wrap.appendChild(el);
+  });
+}
+function openNationSelect(scKey){
+  const sc=SCENARIOS[scKey];
+  $('#ns-tag').textContent=sc.tag;
+  $('#ns-title').textContent=sc.name+' — 국가 선택';
+  $('#ns-desc').textContent=sc.desc;
+  const grid=$('#nat-grid'); grid.innerHTML='';
+  pendingNat=null;
+  if(scKey==='any'){
+    genAnyScenario();
+    $('#any-rules').style.display='block';
+    $('#any-rules-list').innerHTML=ANY_PREVIEW.map(r=>'<li><b>'+r.n+'</b> — '+r.d+'</li>').join('');
+    $('#ns-desc').textContent='무작위 국가 6곳이 서로 싸운다. 무작위 규칙 3개가 판을 지배하며, 국적은 선택할 수 없다 — 어차피 어느 나라든 상관없으니까.';
+  }else{
+    ANY_PREVIEW=null;
+    $('#any-rules').style.display='none';
+  }
+  sc.playable.forEach(nid=>{
+    const N=NATIONS[nid];
+    const bloc=sc.bloc[nid]===1?'연합국 계열':(sc.bloc[nid]===2?'동맹/추축국 계열':'중립');
+    const el=document.createElement('div');
+    el.className='nat'; el.dataset.n=nid;
+    el.innerHTML='<span class="swatch" style="background:'+N.c+'"></span><div class="flag">'+N.f+'</div>'+
+      '<div class="nm">'+N.n+'</div><div class="bloc">'+bloc+'</div>';
+    el.onclick=()=>{ grid.querySelectorAll('.nat').forEach(x=>x.classList.remove('sel')); el.classList.add('sel'); pendingNat=nid; };
+    grid.appendChild(el);
+  });
+  if(scKey==='any'){ pendingNat=sc.playable[0]; grid.firstChild.classList.add('sel'); }
+  showScreen('scr-nation');
+}
+
+/* ============ 게임 표시 ============ */
+function showGame(){
+  showScreen('scr-game');
+  renderAll();
+  setTimeout(drawMap,50);
+}
+function showOver(win){
+  setTimeout(()=>{
+    $('#over-title').textContent= win?'승 리':'패 배';
+    $('#over-title').className='over-title '+(win?'win':'lose');
+    const f=my();
+    $('#over-sub').innerHTML= win
+      ? '<b style="color:#e8b04b">'+f.flag+' '+f.name+'</b>이(가) 전 대륙을 통일했습니다.<br>총 '+S.turn+'턴, '+ (S.year||'') +'년에 전쟁이 막을 내렸습니다.'
+      : '<b style="color:#e5484d">'+f.flag+' '+f.name+'</b>이(가) 모든 영지를 상실하고 항복했습니다.<br>'+S.turn+'턴 만에 깃발이 내려갔습니다.';
+    $('#modal-over').classList.add('on');
+  },600);
+}
+
+/* ============ 저장 ============ */
+const SAVE_KEY='war_chronicle_v1';
+function saveGame(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify(S)); }catch(e){} updateContinue(); }
+function hasSave(){ try{ return !!localStorage.getItem(SAVE_KEY); }catch(e){ return false; } }
+function loadGame(){
+  try{
+    const d=localStorage.getItem(SAVE_KEY); if(!d) return false;
+    const o=JSON.parse(d);
+    if(!o||!o.territories||!o.factions) return false;
+    const bad=Object.keys(o.territories).some(k=>!o.factions[o.territories[k].owner]);
+    if(bad) return false;
+    S=o; return true;
+  }catch(e){ return false; }
+}
+function updateContinue(){ $('#btn-continue').style.display=hasSave()?'':'none'; }
+
+/* ============ 도움말 ============ */
+function helpHTML(){
+  return '<ul class="help-list">'+
+  '<li><b>목표:</b> 적 진영 전체를 항복시키고, 중립을 제외한 모든 영지를 점령하면 승리합니다.</li>'+
+  '<li><b>턴 흐름:</b> 생산·이동·연구·공격을 명령한 뒤 <b>턴 종료</b> → AI 진영 행동 → 수입/보급/연구 정산 → 이벤트</li>'+
+  '<li><b>생산:</b> 영지의 산업이 높을수록 생산 포인트가 많습니다. 예산💰과 병력(인력)🧍를 함께 소비합니다.</li>'+
+  '<li><b>보급:</b> 병력 유지비가 수입보다 많으면 매 턴 병력이 이탈합니다. 산업을 올리거나 군축하세요.</li>'+
+  '<li><b>공격:</b> 인접 영지만 공격 가능하며 영지당 턴당 1회입니다. 산악·요새·도시는 방어에 매우 유리합니다.</li>'+
+  '<li><b>투입 비율:</b> 하단의 "공격 투입"을 100%로 두면 전량 돌격(승률 높음), 낮추면 본진을 지킬 수 있습니다.</li>'+
+  '<li><b>병력:</b> 🪖보병 · 🧨공병(요새 무력화) · 🔫기관총 · 💥포병 · 🐎기병 · 🚛전차 · ✈️전투기(제공권) · 🛩️폭격기 · 🛥️잠수함 · 🚢전함 · 🕵️특수부대 · ☢️전략폭격대</li>'+
+  '<li><b>무기:</b> 연구를 마치면 무기를 도입할 수 있습니다. 도입한 무기는 해당 병력의 화력/방어를 %로 올려줍니다.</li>'+
+  '<li><b>연구:</b> 한 번에 한 가지. 산업이 발달할수록 연구 속도가 빨라집니다.</li>'+
+  '<li><b>해군:</b> 잠수함·전함은 해안(항구) 영지에서만 싸웁니다.</li>'+
+  '<li><b>이동:</b> 아군 영지 선택 → 이동 대상 선택 → 25/50/100%.</li>'+
+  '<li><b>아무 전쟁:</b> 국가·규칙·병기 구성이 매 판 무작위로 바뀌는 혼돈 모드입니다.</li>'+
+  '</ul>';
+}
+
+/* ============ 초기화 ============ */
+function init(){
+  buildTitleCards();
+  updateContinue();
+  $('#btn-continue').onclick=()=>{ if(loadGame()){ showGame(); toast('📂 저장 불러오기 완료'); } };
+  $('#btn-reset').onclick=()=>{ localStorage.removeItem(SAVE_KEY); updateContinue(); toast('🗑 저장 데이터 삭제'); };
+  const openHelp=()=>{ $('#help-body').innerHTML=helpHTML(); $('#modal-help').classList.add('on'); };
+  $('#btn-help').onclick=openHelp; $('#btn-help2').onclick=openHelp;
+  $('#help-close').onclick=$('#help-ok').onclick=()=>$('#modal-help').classList.remove('on');
+  $('#btn-back').onclick=()=>showScreen('scr-title');
+  document.querySelectorAll('.diff').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('.diff').forEach(x=>x.classList.remove('sel'));
+    b.classList.add('sel'); pendingDiff=Number(b.dataset.d);
+  });
+  $('#btn-start').onclick=()=>{
+    if(!pendingNat){ toast('국가를 선택하세요',true); return; }
+    newGame(pendingScen,pendingNat,pendingDiff);
+    showGame();
+    toast('⚔ '+S.factions[S.mine].name+', 전쟁을 개시합니다');
+  };
+  $('#btn-endturn').onclick=()=>{ if(S&&!S.over) endTurn(); };
+  $('#btn-save').onclick=()=>{ saveGame(); toast('💾 저장 완료'); };
+  document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{ S.tab=b.dataset.t; renderRight(); });
+  $('#right-pane').addEventListener('click',e=>{
+    const t=e.target.closest('[data-tech]');
+    if(t){ startResearch(t.dataset.tech); return; }
+    const w=e.target.closest('[data-wep]');
+    if(w){ unlockWeapon(w.dataset.wep); return; }
+    const g=e.target.closest('[data-go]');
+    if(g){ S.sel=Number(g.dataset.go); renderAll(); return; }
+    if(e.target.id==='tech-cancel'){ my().activeTech=null; my().techProg=0; renderRight(); }
+  });
+  $('#btl-skip').onclick=()=>{ if(window._btlSkip) window._btlSkip(); };
+  $('#btl-ok').onclick=()=>{ if(_btlDone){ const d=_btlDone; _btlDone=null; d(); } };
+  $('#over-menu').onclick=()=>{ $('#modal-over').classList.remove('on'); showScreen('scr-title'); updateContinue(); };
+  $('#over-restart').onclick=()=>{ $('#modal-over').classList.remove('on'); newGame(S.sc,S.mine,S.diff); showGame(); };
+
+  const cv=$('#map');
+  cv.addEventListener('click',e=>{
+    if(!S) return;
+    const r=cv.getBoundingClientRect();
+    const id=mapHit(e.clientX-r.left,e.clientY-r.top);
+    if(id==null) return;
+    S.sel=id; renderAll();
+  });
+  cv.addEventListener('mousemove',e=>{
+    if(!S) return;
+    const r=cv.getBoundingClientRect();
+    const id=mapHit(e.clientX-r.left,e.clientY-r.top);
+    if(id!==MAP.hover){ MAP.hover=id; drawMap(); }
+    const tip=$('#hover-tip');
+    if(id==null){ tip.style.display='none'; return; }
+    const t=S.territories[id], f=S.factions[t.owner];
+    tip.style.display='block';
+    tip.innerHTML='<b>'+t.name+'</b> '+f.flag+' '+f.name+' · '+TERRAIN[t.terrain].name+' · 병력 '+fmt(sum(t.troops))+' · 요새 '+t.fort;
+  });
+  cv.addEventListener('mouseleave',()=>{ MAP.hover=null; $('#hover-tip').style.display='none'; drawMap(); });
+  window.addEventListener('resize',()=>drawMap());
+  setInterval(()=>{ if(S&&document.getElementById('scr-game').classList.contains('active')) renderBottomIfFresh(); },600);
+}
+init();
+</script>
+</body>
+</html>
